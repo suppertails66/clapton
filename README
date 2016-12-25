@@ -1,0 +1,15 @@
+Clapton: sound scripting system for Layla (NES)
+
+This is a sound scripting system targeted at the sound driver for the NES/Famicom game Layla. It's designed to be able to patch programmed sounds directly onto a ROM, or export segments to individual files.
+
+It supports all the opcodes provided by the original driver, and also supports (but does not provide the functionality for) an extension that replaces two dummy opcodes with a simple call/return mechanism.
+
+Usage:
+
+clapton file.txt dst
+
+This writes all defined sound data to individual files, located in the directory dst.
+
+clapton file.txt inrom.nes outrom.nes
+
+This patches all defined sound data to inrom.nes, saving the result as outrom.nes. If the original ROM has an iNES header, it is removed before patching, and an appropriate iNES header is always added to the output.
