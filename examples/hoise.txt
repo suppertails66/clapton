@@ -1,0 +1,419 @@
+// Title
+
+// Free space defines
+// Update code for bonus game objects
+// 0x330 / 816
+$freespace_1 = "0x9AB2";
+
+// Overwrite the real channels at their original locations so we
+// don't have to update the pointers
+// pointers: 0x8814?
+// 0x54 / 84
+_SQ1ADDR = 0x8806;
+// 0x52 / 82
+_SQ2ADDR = 0x885A;
+// ?
+_TRIADDR = 0x88AC;
+
+// Note duration macros. 32nd = 3 ticks, 16th = 6, etc.
+//$32_1 = "2";
+//$32_2 = "2";
+/*$16 = "4";
+$8  = "8";
+$4  = "12";
+$2  = "24";
+$1  = "48";
+$24 = "9";
+$12 = "18";
+$6 = "36";
+$3 = "72"; */
+// this song is speciiiiiiial
+$sq1_i = "3";
+$sq1_i1 = "3";
+$sq1_i2 = "2";
+$sq2_i = "2";
+$32_1 = "2";
+$32_2 = "1";
+$32 = "3";
+$16 = "3";
+$8  = "6";
+$4  = "24";
+$2  = "48";
+$1  = "96";
+$24 = "9";
+$12 = "18";
+$6 = "36";
+$3 = "72";
+/*$32_1 = "4";
+$32_2 = "3";
+$16 = "7";
+$8  = "14";
+$4  = "28";
+$2  = "56";
+$1  = "112";
+// WRONG
+//$24 = "10";
+$12 = "21";
+$6 = "42";
+$3 = "84"; */
+
+
+	 
+
+//*******************************
+// Square defines
+//*******************************
+// Pulse width register macros
+$sq12 = "REG1(0x3F)";
+$sq25 = "REG1(0x7F)";
+$sq50 = "REG1(0xBF)";
+$sq75 = "REG1(0xFF)";
+
+// Definition of regular/delay volume
+$lead_l = "CHANVOL(0x0C)";
+$lead_q = "CHANVOL(0x06)";
+$lead_m1 = "CHANVOL(0x08)";
+$lead_m2 = "CHANVOL(0x0A)";
+
+$sq_q = "CHANVOL(0x05)";
+$sq_l = "CHANVOL(0x0A)";
+$sq_q2 = "CHANVOL(0x06)";
+$sq_l2 = "CHANVOL(0x0C)";
+$sq_q3 = "CHANVOL(0x08)";
+$sq_l3 = "CHANVOL(0x0C)";
+
+$legato = "REG2(0x08)";
+$intro_staccato = "REG2(0x38)";
+$lead_staccato = "REG2(0x48)";
+$back_staccato = "REG2(0x38)";
+$sq1_staccato = "REG2(0x38)";
+$sq2_staccato = "REG2(0x38)";
+
+//*******************************
+// Triangle defines
+//*******************************
+//$trkick = "f3 1 eb3 1 c3 1 a2 1 f#2 1 d2 1";
+//$trkick = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+//$trkick = "c3 2 f#2 2 c1 2";
+//$trkick_full = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+//$trkick_full = "a3 1 f#3 1 d#3 1 c3 1 a2 1 f#2 1";
+$trkick = "a3 1 f#3 1 d#3 1 c3 1 a2 1 f#2 1";
+//$trkick = "g3 1 e3 1 c3 1 a2 1 f#2 1";
+//$trkick = "g3 1 d#3 1 b2 1 f#2 1";
+$trkick_half = "c3 1 f#2 1 c1 1";
+$trrevsn = "g#1 1 b1 1 e2 1 f#2 1 a2 1 b2 1 d3 1 e3 1 g3 1 a3 1 c4 1 d4 1";
+
+//*******************************
+// Noise defines
+//*******************************
+$kick = "NOISE(0x81, 0x8F)";
+//$sn = "NOISE(0x85, 0x09)";
+$sn = "REG2(0xB8) NOISE(0x96, 0x09)";
+$snshort = "REG2(0x58) NOISE(0x96, 0x08)";
+$ch = "NOISE(0x81, 0x01)";
+$oh = "NOISE(0x85, 0x01)";
+$crash = "NOISE(0x8C, 0x01)";
+$hiss = "NOISE(0x92, 0x08)";
+
+
+
+//*******************************
+// Misc defines
+//*******************************
+// Sweep
+$sweepoff = "REG3(0x00)";
+$introsweep = "REG3(0x93)";
+
+//$meldecay = "DECAY(2)";
+//$backdecay = "DECAY(1)";
+$meldecay = "REG2(0x08)";
+$backdecay = "REG2(0x38)";
+$melstaccato = "REG2(0x38)";
+$mellegato = "REG2(0x08)";
+
+//*******************************
+// Song init
+//*******************************
+// Song init. This only needs to happen on one channel,
+// and only for cave music (because it plays first no matter what).
+_SQ1 = { DRIVERDELAY(0x00) TEMPO(1) MASTSHIFT(0) };
+//_SQ1 = { TEMPO(1) };
+// Channel init
+_SQ1 = { CHANSHIFT(0) EFFECTS(0) DECAY(3) $lead_l
+	 $sq50 REG2(0x08) };
+_SQ2 = { CHANSHIFT(0) EFFECTS(0) DECAY(3) $lead_l
+	 $sq25 REG2(0x08) };
+_TRI = { CHANSHIFT(0) EFFECTS(0)
+	 REG1(0xFF) REG2(0x08) };
+
+// "Declarations" of jump points for each channel.
+// This is an esoteric workaround for the fact that the compiler is
+// one-pass, making it normally impossible (e.g.) to jump from an earlier
+// position to one defined later. By using "+" instead of "^" when
+// defining a label, the position will be offset by 3. Assuming the
+// label is immediately followed by a JUMP() command, the label
+// then references the data following the jump. The data for the three
+// "real" channels will be placed on the "generic" channel in the middle
+// of the file. To save space, we need to put some data in those
+// channels, so the data at the end of the track goes there.
+//
+// Ultimately, this is a hacky and entirely too complicated way of getting
+// tracks to loop to an arbitrary point.
+_SQ1 = { +sq1_reentry };
+_SQ2 = { +sq2_reentry };
+_TRI = { +tri_reentry };
+
+//*******************************
+// "Generic" data
+//*******************************
+
+/*_GENERICADDR = $freespace_1;
+
+
+
+_GENERIC = {
+
+  
+
+  RET()
+};
+
+
+
+_GENERIC = {
+
+  ^sq1_overflow
+  
+  // 0
+  
+  
+  
+  JUMP(+sq1_reentry)
+};
+
+_GENERIC = {
+
+  ^sq2_overflow
+  
+  // 0
+  
+  
+  
+  JUMP(+sq2_reentry)
+};
+
+_GENERIC = {
+
+  ^tri_overflow
+  
+  // 0
+  
+  
+
+  JUMP(^tri_reentry)
+}; */
+
+$introlength = "15";
+
+//*******************************
+// "Physical" channel data
+//*******************************
+
+_SQ1 = { 
+//  JUMP(^sq1_overflow)
+
+//  REG3(0x95) b5 $introlength
+  REG3(0x9D) b2 $introlength
+  
+  ^sq1_loop
+
+  $sq1_staccato
+  
+  SETLOOP()
+    b2 $sq1_i
+    e3 $sq1_i
+    f#3 $sq1_i
+    CHANSHIFT(12)
+  REPLAYLOOP(1)
+  
+  // +12
+  b3 $sq1_i
+  e4 $sq1_i
+  f#4 $sq1_i
+  
+  SETLOOP()
+    b4 $sq1_i
+    f#4 $sq1_i
+    e4 $sq1_i
+    CHANSHIFT(0)
+  REPLAYLOOP(1)
+//  b3 $32  r $32
+//  f#3 $32  r $32
+//  e3 $32  r $32
+  b3 $sq1_i
+
+/*  SETLOOP()
+    b2 $32  r $32
+    e3 $32  r $32
+    f#3 $32  r $32
+    CHANSHIFT(12)
+  REPLAYLOOP(1)
+  
+  // +12
+  b3 $32  r $32
+  e4 $32  r $32
+  f#4 $32  r $32
+  
+  SETLOOP()
+    b4 $32  r $32
+    f#4 $32  r $32
+    e4 $32  r $32
+    CHANSHIFT(0)
+  REPLAYLOOP(1)
+//  b3 $32  r $32
+//  f#3 $32  r $32
+//  e3 $32  r $32
+  b3 $32  r $32 */
+  
+  JUMP(^sq1_loop)
+  
+};
+
+_SQ2 = {
+//  JUMP(^sq2_overflow)
+
+//  r $introlength
+//  REG3(0xA5) b5 $introlength
+  REG3(0xAC) b2 $introlength
+
+  ^sq2_loop
+  
+  $sq2_staccato
+  
+  f#2 2 r 2
+  b2 2 r 2
+  e3 1
+  
+  f#3 1 r 2
+  b3 2 r 2
+  e4 2
+  
+  r 2 f#4 1
+  b4 1 r 2
+  e5 2 r 1
+  
+  r 1 f#5 2
+  r 2 b5 1
+  f#5 1 r 2
+  
+  e5 2 r 2
+  b4 2 r 2
+  f#4 1
+  
+  e4 1 r 2
+  
+/*  SETLOOP()
+    b2 $sq2_i b2 $sq2_i   // 6
+    e3 $sq2_i e3 $sq2_i   // 9
+    f#3 $sq2_i            // 12
+    CHANSHIFT(12)
+  REPLAYLOOP(1)
+  
+  // +12
+  b3 $sq2_i b3 $sq2_i
+  e4 $sq2_i e4 $sq2_i
+  f#4 $sq2_i
+  
+  SETLOOP()
+    b4 $sq2_i b4 $sq2_i
+    f#4 $sq2_i f#4 $sq2_i
+    e4 $sq2_i
+    CHANSHIFT(0)
+  REPLAYLOOP(1)
+//  b3 $32  r $32
+//  f#3 $32  r $32
+//  e3 $32  r $32
+  b3 $sq2_i b3 2 */
+  
+/*  r 6
+
+  ^sq2_loop
+
+  $sq2_staccato
+  $lead_q
+  
+  SETLOOP()
+    b2 $sq1_i
+    e3 $sq1_i
+    f#3 $sq1_i
+    CHANSHIFT(12)
+  REPLAYLOOP(1)
+  
+  // +12
+  b3 $sq1_i
+  e4 $sq1_i
+  f#4 $sq1_i
+  
+  SETLOOP()
+    b4 $sq1_i
+    f#4 $sq1_i
+    e4 $sq1_i
+    CHANSHIFT(0)
+  REPLAYLOOP(1)
+//  b3 $32  r $32
+//  f#3 $32  r $32
+//  e3 $32  r $32
+  b3 $sq1_i */
+  
+/*
+  
+  SETLOOP()
+    b2 $sq2_i b2 $sq2_i   // 6
+    e3 $sq2_i             // 9
+    f#3 $sq2_i            // 12
+    CHANSHIFT(12)
+  REPLAYLOOP(1)
+  
+  // +12
+  b3 $sq2_i b3 $sq2_i
+  e4 $sq2_i
+  f#4 $sq2_i
+  
+  SETLOOP()
+    b4 $sq2_i b4 $sq2_i
+    f#4 $sq2_i
+    e4 $sq2_i
+    CHANSHIFT(0)
+  REPLAYLOOP(1)
+//  b3 $32  r $32
+//  f#3 $32  r $32
+//  e3 $32  r $32
+  b3 $sq2_i b3 1 */
+  
+  JUMP(^sq2_loop)
+  
+};
+
+_TRI = {
+//  JUMP(^tri_overflow)
+
+  r 3
+  
+  SETLOOP()
+    $snshort $trkick_half
+  REPLAYLOOP(3)
+//  REPLAYLOOP(4)
+  
+  ^tri_loop
+  
+//  SETLOOP()
+    $sn     $trkick
+            e2 $16
+            e3 $16
+//  REPLAYLOOP(7)
+
+  JUMP(^tri_loop)
+  
+};
+
+

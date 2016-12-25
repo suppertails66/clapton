@@ -1,0 +1,975 @@
+// Ending
+
+// 2CF / 719
+//$freespace_1 = "0x30120";
+// 217 / 535
+$freespace_1 = "0x3041F";
+// 15F / 351
+$freespace_2 = "0x30291";
+// 200 / 512
+$freespace_3 = "0x33E00";
+
+// 0xB4 / 180
+_SQ1ADDR = 0x30024;
+// 0xC6 / 198
+//_SQ2ADDR = 0x3020F;
+_SQ2ADDR = 0x300D8;
+// 0x24E / 590
+//_TRIADDR = 0x302FE;
+_TRIADDR = 0x301A1;
+
+
+// update tempo
+SETBYTE(0x307F0, 0x01);
+
+// update pointers
+// sq1
+SETADDRESS(0x30800, 0x8024);
+// sq2
+//SETADDRESS(0x30802, 0x820F);
+SETADDRESS(0x30802, 0x80D8);
+// tri
+//SETADDRESS(0x30804, 0x82FE);
+SETADDRESS(0x30804, 0x81A1);
+
+// Note duration macros. 32nd = 3 ticks, 16th = 6, etc.
+/*$32 = "3";
+$16 = "6";
+$8  = "12";
+$4  = "24";
+$2  = "48";
+$1  = "96";
+$24 = "9";
+$12 = "18";
+$6 = "36";
+$3 = "72"; */
+$32_1 = "4";
+$32_2 = "3";
+$16 = "7";
+$8  = "14";
+$4  = "28";
+$2  = "56";
+$1  = "112";
+$1half  = "224";
+// WRONG
+//$24 = "10";
+$12 = "21";
+$6 = "42";
+$3 = "84";
+
+
+	 
+
+//*******************************
+// Square defines
+//*******************************
+// Pulse width register macros
+$sq12 = "REG1(0x3F)";
+$sq25 = "REG1(0x7F)";
+$sq50 = "REG1(0xBF)";
+$sq75 = "REG1(0xFF)";
+
+// Definition of regular/delay volume
+$lead_l = "CHANVOL(0x0A)";
+$lead_mid = "CHANVOL(0x08)";
+$lead_q = "CHANVOL(0x05)";
+$lead_m1 = "CHANVOL(0x08)";
+$lead_m2 = "CHANVOL(0x0A)";
+$back_l = "CHANVOL(0x0C)";
+$back_q = "CHANVOL(0x06)";
+
+$sq_q = "CHANVOL(0x05)";
+$sq_l = "CHANVOL(0x0A)";
+$sq_q2 = "CHANVOL(0x06)";
+$sq_l2 = "CHANVOL(0x0C)";
+$sq_q3 = "CHANVOL(0x08)";
+$sq_l3 = "CHANVOL(0x0C)";
+
+$legato = "REG2(0x08)";
+$intro_staccato = "REG2(0x38)";
+$lead_staccato = "REG2(0x48)";
+$lead_staccato_16 = "REG2(0x78)";
+$back_staccato = "REG2(0x38)";
+
+//*******************************
+// Triangle defines
+//*******************************
+//$trkick = "f3 1 eb3 1 c3 1 a2 1 f#2 1 d2 1";
+//$trkick = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+//$trkick = "c3 2 f#2 2 c1 2";
+//$trkick_full = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+$trkick_full = "g3 1 e3 1 c#3 1 a#2 1 g2 1 e2 2";
+//$trkick = "c3 2 f#2 2 c1 3";
+//$trkick = "c#3 1 a#2 1 g#2 1 f2 1 d#2 1 c2 1 a#1 1";
+$trkick = "c#3 1 a#2 1 g2 1 e2 1 c#2 1 a#1 2";
+//$trkick_down = "c2 2 f#1 2 c#0 3";
+$trkick_down = "g2 1 e2 1 c#2 1 a#1 1 g1 1 e1 2";
+$trrevsn = "g#1 1 b1 1 e2 1 f#2 1 a2 1 b2 1 d3 1 e3 1 g3 1 a3 1 c4 1 d4 1";
+
+$bassslide_1 = "d3 1 c#3 1 c3 1 b2 2 a#2 1 a2 1";
+$bassslide_2 = "g#2 1 g2 1 f#2 2 f2 1 e2 1 d#2 1";
+
+//*******************************
+// Noise defines
+//*******************************
+$kick = "NOISE(0x81, 0x8F)";
+//$sn = "NOISE(0x81, 0x06)";
+//$sn = "REG2(0x78) NOISE(0x96, 0x06)";
+$sn = "REG2(0x68) NOISE(0x97, 0x08)";
+$ch = "NOISE(0x81, 0x01)";
+//$oh = "NOISE(0x85, 0x01)";
+//$oh = "NOISE(0xA5, 0x01)";
+$oh = "NOISE(0xA7, 0x01)";
+$crash = "REG2(0x30) NOISE(0x8C, 0x01)";
+$hiss = "NOISE(0x92, 0x08)";
+
+$defaultdecay = "5";
+
+//*******************************
+// Misc defines
+//*******************************
+// Sweep
+$sweepoff = "REG3(0x00)";
+$introsweep = "REG3(0x93)";
+
+//$meldecay = "DECAY(2)";
+//$backdecay = "DECAY(1)";
+$meldecay = "REG2(0x08)";
+$backdecay = "REG2(0x38)";
+$melstaccato = "REG2(0x38)";
+$mellegato = "REG2(0x08)";
+
+//*******************************
+// Song init
+//*******************************
+// Song init. This only needs to happen on one channel,
+// and only for cave music (because it plays first no matter what).
+_SQ1 = { DRIVERDELAY(0x00) TEMPO(1) MASTSHIFT(0) };
+//_SQ1 = { TEMPO(1) };
+// Channel init
+_SQ1 = { CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay) $lead_l
+	 $sq50 REG2(0x08) };
+_SQ2 = { CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay) $lead_l
+	 $sq50 REG2(0x08) };
+_TRI = { CHANSHIFT(0) EFFECTS(0)
+	 REG1(0xFF) REG2(0x08) };
+
+// "Declarations" of jump points for each channel.
+// This is an esoteric workaround for the fact that the compiler is
+// one-pass, making it normally impossible (e.g.) to jump from an earlier
+// position to one defined later. By using "+" instead of "^" when
+// defining a label, the position will be offset by 3. Assuming the
+// label is immediately followed by a JUMP() command, the label
+// then references the data following the jump. The data for the three
+// "real" channels will be placed on the "generic" channel in the middle
+// of the file. To save space, we need to put some data in those
+// channels, so the data at the end of the track goes there.
+//
+// Ultimately, this is a hacky and entirely too complicated way of getting
+// tracks to loop to an arbitrary point.
+_SQ1 = { +sq1_reentry };
+_SQ2 = { +sq2_reentry };
+_TRI = { +tri_reentry };
+
+//*******************************
+// "Generic" data
+//*******************************
+
+_GENERICADDR = $freespace_1;
+
+
+_GENERIC = {
+
+  ^lead_intro_1
+  
+  c3 $16
+  r $8
+  d3 $16
+  r $8
+  d#3 $16
+  r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_intro_2
+  
+  c3 $16
+  r $8
+  d3 $16
+  r $8
+  c3 $16
+  r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main1_1
+  
+           c4 $16        r $16
+  $lead_q  c4 $16
+  $lead_l  d4 $16        r $16
+  $lead_q  d4 $16
+  $lead_l  d#4 $16       r $16
+  $lead_q  d#4 $16
+  
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main1_2
+  
+           c4 $16        r $16
+  $lead_q  c4 $16
+  $lead_l  d4 $16        r $16
+  $lead_q  d4 $16
+  $lead_l  c4 $16        r $16
+  $lead_q  c4 $16
+  
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main2_1
+  
+  c3 $16
+  g#2 $16
+  f2 $16
+  c3 $16
+  g#2 $16
+  f2 $16
+  c3 $16
+  g#2 $16
+  
+  c3 $16
+  g#2 $16
+  d#2 $16
+  c3 $16
+  g#2 $16
+  d#2 $16
+  c3 $16
+  g#2 $16
+  
+  d#3 $16
+  c3 $16
+  g#2 $16
+  d#3 $16
+  c3 $16
+  g#2 $16
+  d#3 $16
+  c3 $16
+  
+  f3 $16
+  c#3 $16
+  a#2 $16
+  f3 $16
+  c#3 $16
+  a#2 $16
+  f3 $16
+  c#3 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main2_2
+  
+/*          c4  $32_1          r   $32_2
+          g#3 $32_1  $lead_q c4  $32_2
+  $lead_l f3  $32_1  $lead_q g#3 $32_2
+  $lead_l c4  $32_1  $lead_q f3  $32_2
+  $lead_l g#3 $32_1  $lead_q c4  $32_2
+  $lead_l f3  $32_1  $lead_q g#3 $32_2
+  $lead_l c4  $32_1  $lead_q f3  $32_2
+  $lead_l g#3 $32_1  $lead_q c4  $32_2 */
+  
+  SETLOOP()
+    $lead_l c4  $32_1  $lead_q f3  $32_2
+    $lead_l g#3 $32_1  $lead_q c4  $32_2
+    $lead_l f3  $32_1  $lead_q g#3 $32_2
+  REPLAYLOOP(1)
+  $lead_l c4  $32_1  $lead_q f3  $32_2
+  $lead_l g#3 $32_1  $lead_q c4  $32_2
+  
+  SETLOOP()
+    $lead_l c4  $32_1  $lead_q d#3 $32_2
+    $lead_l g#3 $32_1  $lead_q c4  $32_2
+    $lead_l d#3 $32_1  $lead_q g#3 $32_2
+  REPLAYLOOP(1)
+  $lead_l c4  $32_1  $lead_q d#3 $32_2
+  $lead_l g#3 $32_1  $lead_q c4  $32_2
+  
+  SETLOOP()
+    $lead_l d#4 $32_1  $lead_q g#3 $32_2
+    $lead_l c4  $32_1  $lead_q d#4 $32_2
+    $lead_l g#3 $32_1  $lead_q c4  $32_2
+  REPLAYLOOP(1)
+  $lead_l d#4 $32_1  $lead_q g#3 $32_2
+  $lead_l c4  $32_1  $lead_q d#4 $32_2
+  
+  SETLOOP()
+    $lead_l f4  $32_1  $lead_q a#3 $32_2
+    $lead_l c#4 $32_1  $lead_q f4  $32_2
+    $lead_l a#3 $32_1  $lead_q a#3 $32_2
+  REPLAYLOOP(1)
+  $lead_l f4  $32_1  $lead_q a#3 $32_2
+  $lead_l c#4 $32_1  $lead_q f4  $32_2
+  
+  $lead_l
+
+  RET()
+};
+
+
+_GENERIC = {
+
+  ^back_intro_1
+  
+  g#2 $16
+  r $8
+  a#2 $16
+  r $8
+  c3 $16
+  r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_intro_2
+  
+  g#2 $16
+  r $8
+  a#2 $16
+  r $8
+  g2 $16
+  r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_main1_1
+  
+           g#3 $16        r $16
+  $back_q  g#3 $16
+  $back_l  a#3 $16        r $16
+  $back_q  a#3 $16
+  $back_l  c4 $16       r $16
+  $back_q  c4 $16
+  
+  $back_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_main1_2
+  
+           g#3 $16        r $16
+  $back_q  g#3 $16
+  $back_l  a#3 $16        r $16
+  $back_q  a#3 $16
+  $back_l  g3 $16        r $16
+  $back_q  g3 $16
+  
+  $back_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_intro_1
+  
+  c#2 $16
+  c#3 $16
+  c#2 $16
+  d#2 $16
+  d#3 $16
+  d#2 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main1_1
+  
+  $kick   $trkick
+          c#2 $16
+  $ch     f3 $32_1 r $32_2
+          d#3 $16
+  $sn     r $16
+          d#2 $32_1 r $32_2
+  $kick   g3 $16
+  $ch     f3 $16
+          $trkick
+  $ch     r $16
+  $kick   r $16
+          c3 $32_1 b2 $32_2
+  $sn     a#2 $8
+  $kick   a#2 $16
+          c#2 $16
+
+  RET()
+};
+
+
+
+_GENERICADDR = $freespace_2;
+
+_GENERIC = {
+
+  ^bass_main1_2
+  
+  $kick   $trkick
+          g#3 $16
+  $ch     r $16
+          d#2 $16
+  $sn     d#3 $16
+          g2 $16
+  $kick   d#2 $16
+  $ch     f2 $16
+          $trkick
+  $ch     r $16
+  $kick   r $16
+          f2 $32_1 r $32_2
+  $sn     d#2 $8
+  $kick   d#2 $16
+  $sn     d#2 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main1_3
+  
+  $kick   $trkick
+          c#2 $16
+  $ch     f3 $32_1 r $32_2
+          d#3 $16
+  $sn     r $16
+          d#2 $32_1 r $32_2
+  $kick   g3 $16
+  $ch     a#3 $16
+          $trkick
+  $ch     r $16
+  $kick   r $16
+          g#2 $32_1 a2 $32_2
+  $sn     a#2 $8
+  $kick   d#3 $16
+          r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main1_4
+  
+  $kick   $trkick
+          a#3 $16
+  $ch     c4 $16
+          r $16
+  $sn     f4 $16
+          g3 $16
+  $kick   a#3 $32_1 g#3 $32_2
+  $ch     g3 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main1_5
+  
+          $trkick
+  $ch     f3 $16
+  $kick   r $16
+          d#3 $16
+  $sn     d#3 $16
+  $sn     $bassslide_1
+  $kick   $bassslide_2
+          d#2 $32_1 r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main1_6
+  
+  $sn     $trkick
+  $sn     r $16
+  $kick   r $16
+          c3 $16
+  $sn     c4 $16
+  $sn     d#3 $16
+  $sn     d#4 $8
+
+  RET()
+};
+
+
+
+_GENERICADDR = $freespace_3;
+
+_GENERIC = {
+
+  ^bass_main2_1
+  
+  $kick   $trkick
+          c#2 $16
+  $ch     c#2 $32_1 r $32_2
+          c#3 $16
+  $sn     $trkick
+          r $16
+  $kick   c#2 $16
+  $ch     r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main2_2
+  
+          $trkick
+  $ch     d#2 $16
+  $kick   d#2 $32_1 r $32_2
+          d#3 $16
+  $sn     $trkick
+          r $16
+  $kick   d#2 $16
+//          r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main2_3
+  
+          $trkick
+  $ch     f#3 $16
+  $kick   r $16
+          f3 $16
+  $sn     $trkick
+  $sn     r $16
+  $kick   f#2 $16
+          r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main3_1
+  
+          $trkick
+          c#2 $16
+          f3 $32_1 r $32_2
+          d#3 $16
+          r $16
+          d#2 $32_1 r $32_2
+          g3 $16
+          f3 $16
+          $trkick
+          r $8
+          c3 $32_1 b2 $32_2
+          a#2 $12
+          c#2 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main3_2
+  
+          $trkick
+          g#3 $16
+          r $16
+          d#2 $16
+          d#3 $16
+          g2 $16
+          d#2 $16
+          f2 $16
+          $trkick
+          r $8
+          f2 $32_1 r $32_2
+          d#2 $4
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main3_3
+  
+          $trkick
+          c#2 $16
+          f3 $32_1 r $32_2
+          d#3 $16
+          r $16
+          d#2 $32_1 r $32_2
+          g3 $16
+          a#3 $16
+          $trkick
+          r $8
+          g#2 $32_1 a2 $32_2
+          a#2 $8
+          d#3 $16
+          r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main3_4
+  
+          $trkick
+          a#3 $16
+          c4 $16
+          r $16
+          f4 $16
+          g3 $16
+          a#3 $32_1 g#3 $32_2
+          g3 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main3_5
+  
+          $trkick
+          f3 $16
+          r $16
+          d#3 $8
+          $bassslide_1
+          $bassslide_2
+          d#2 $32_1 r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main3_6
+  
+          $trkick
+          r $8
+          c3 $16
+          c4 $16
+          d#3 $16
+          d#4 $8
+
+  RET()
+};
+
+//*******************************
+// "Physical" channel data
+//*******************************
+
+_SQ1 = {
+
+  // 0
+  
+  CALL(^lead_intro_1)
+  r $2
+  CALL(^lead_intro_2)
+  r $2
+  CALL(^lead_intro_1)
+  r $4
+  f3 $4
+  CALL(^lead_intro_2)
+  r $2
+  
+  // 1
+  
+  CALL(^lead_intro_1)
+  r $12
+  d#3 $16
+  d3 $4
+  CALL(^lead_intro_2)
+  r $4
+  a#2 $4
+  CALL(^lead_intro_1)
+  r $12
+  d#3 $16
+  f3 $4
+  CALL(^lead_intro_2)
+  r $2
+  
+  // 2
+  
+  SETLOOP()
+    CALL(^lead_main1_1)
+    r $8
+    d#4 $16
+    d4 $4
+    CALL(^lead_main1_2)
+    r $12
+    a#3 $4
+    CALL(^lead_main1_1)
+    r $12
+    f4 $4
+    CALL(^lead_main1_2)
+    r 49
+  REPLAYLOOP(1)
+  
+  // 4
+  
+  CALL(^lead_main2_1)
+  CHANSHIFT(12)
+  CALL(^lead_main2_1)
+  
+  // 5
+  
+  CHANSHIFT(0)
+  CALL(^lead_main2_2)
+  CHANSHIFT(12)
+  CALL(^lead_main2_2)
+  
+  // 6
+  
+  CHANSHIFT(24)
+  CALL(^lead_main2_2)
+  CALL(^lead_main2_2)
+  
+  // 7
+  
+  CHANSHIFT(0)
+  
+  SETLOOP()
+    CALL(^lead_main1_1)
+    r $8
+    d#4 $16
+    d4 $4
+    CALL(^lead_main1_2)
+    r $12
+    a#3 $4
+    CALL(^lead_main1_1)
+    r $12
+    f4 $4
+    CALL(^lead_main1_2)
+    r 49
+    CHANSHIFT(-12)
+  REPLAYLOOP(1)
+  
+};
+
+_SQ2 = {
+
+  // 0
+  
+  CALL(^back_intro_1)
+  r $2
+  CALL(^back_intro_2)
+  r $2
+  CALL(^back_intro_1)
+  r $4
+  c#3 $4
+  CALL(^back_intro_2)
+  r $2
+  
+  // 1
+  
+  CALL(^back_intro_1)
+  r $12
+  c3 $16
+  a#2 $4
+  CALL(^back_intro_2)
+  r $4
+  g2 $4
+  CALL(^back_intro_1)
+  r $12
+  c3 $16
+  d3 $4
+  CALL(^back_intro_2)
+  r $2
+  
+  // 2
+  
+  SETLOOP()
+    CALL(^back_main1_1)
+    r $8
+    c4 $16
+    a#3 $4
+    CALL(^back_main1_2)
+    r $12
+    g3 $4
+    CALL(^back_main1_1)
+    r $12
+    d4 $4
+    CALL(^back_main1_2)
+    r 49
+  REPLAYLOOP(1)
+  
+  // 4
+  
+  $sq25
+  
+  r $1half
+  CALL(^lead_main2_1)
+  
+  // 5
+  
+  CHANSHIFT(0)
+  CALL(^lead_main2_2)
+//  CHANSHIFT(12)
+  CALL(^lead_main2_2)
+  
+  // 6
+  
+//  CHANSHIFT(24)
+  CHANSHIFT(24)
+  CALL(^lead_main2_2)
+  CHANSHIFT(12)
+  CALL(^lead_main2_2)
+  
+  // 7
+  
+  CHANSHIFT(0)
+  
+  $sq50
+  c6 $16
+  $sq25
+  c6 70
+  
+  $sq50
+  
+  CHANSHIFT(0)
+  
+  c4 $16
+  a#3 $4
+  CALL(^back_main1_2)
+  r $12
+  g3 $4
+  CALL(^back_main1_1)
+  r $12
+  d4 $4
+  CALL(^back_main1_2)
+  r 49
+  
+  // 8
+  
+  CHANSHIFT(-12)
+  CALL(^back_main1_1)
+  r $8
+  c4 $16
+  a#3 $4
+  CALL(^back_main1_2)
+  r $12
+  g3 $4
+  CALL(^back_main1_1)
+  r $12
+  d4 $4
+  CALL(^back_main1_2)
+  r 49
+  
+};
+
+_TRI = {
+
+  // 0
+  
+  r $1half
+  r $1half
+  
+  // 1
+  
+  CALL(^bass_intro_1)
+  f2 $16
+  r 63
+  CALL(^bass_intro_1)
+  c2 $16
+  r 63
+  CALL(^bass_intro_1)
+  f2 $16
+  r 63
+  CALL(^bass_intro_1)
+  c2 $16
+  r $8
+  
+  $sn r $16
+  SETLOOP()
+    $sn r $8
+  REPLAYLOOP(2)
+  
+  // 2
+  
+  CALL(^bass_main1_1)
+  CALL(^bass_main1_2)
+  CALL(^bass_main1_3)
+  CALL(^bass_main1_4)
+  CALL(^bass_main1_5)
+  
+  // 3
+  
+  CALL(^bass_main1_1)
+  CALL(^bass_main1_2)
+  CALL(^bass_main1_3)
+  CALL(^bass_main1_4)
+  CALL(^bass_main1_6)
+  
+  // 4
+  
+  SETLOOP()
+    CALL(^bass_main2_1)
+    CALL(^bass_main2_2)
+            r $16
+    CHANSHIFT(4)
+    CALL(^bass_main2_1)
+    CHANSHIFT(0)
+    CALL(^bass_main2_2)
+    $sn     r $16
+    
+    CALL(^bass_main2_1)
+    CALL(^bass_main2_2)
+            r $16
+    CHANSHIFT(4)
+    CALL(^bass_main2_1)
+    CHANSHIFT(0)
+    CALL(^bass_main2_3)
+  REPLAYLOOP(2)
+  
+  // 7
+  
+  $crash
+  CALL(^bass_main3_1)
+  CALL(^bass_main3_2)
+  CALL(^bass_main3_3)
+  CALL(^bass_main3_4)
+  CALL(^bass_main3_6)
+  
+  // 8
+  
+  CALL(^bass_main3_1)
+  CALL(^bass_main3_2)
+  CALL(^bass_main3_3)
+  CALL(^bass_main3_4)
+  CALL(^bass_main3_5)
+  
+};
+
+

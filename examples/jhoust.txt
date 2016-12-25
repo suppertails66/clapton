@@ -1,0 +1,347 @@
+// Final boss
+
+// Free space defines
+// Portion of interrupt handler that isn't used during regular gameplay
+// 36309 / 0x11C / 284
+$freespace_1 = "0x28636";
+// iris/keycard 0x9349 (0x39 / 57)
+// this can't be used on level 5
+$freespace_keycard = "0xD349";
+
+// Overwrite the real channels at their original locations so we
+// shared with tri!
+_SQ1ADDR = 0x28AB9;
+// absolutely fucking nothing!
+_SQ2ADDR = 0x28AFE;
+// shared with sq1!
+_TRIADDR = 0x28ACE;
+
+$defaultdecay = "10";
+
+// Note duration macros. 32nd = 3 ticks, 16th = 6, etc.
+$32 = "3";
+$16 = "6";
+$8  = "12";
+$4  = "24";
+$2  = "48";
+$1  = "96";
+$24 = "9";
+$12 = "18";
+$6 = "36";
+$3 = "72";
+
+
+	 
+
+//*******************************
+// Square defines
+//*******************************
+// Pulse width register macros
+$sq12 = "REG1(0x3F)";
+$sq25 = "REG1(0x7F)";
+$sq50 = "REG1(0xBF)";
+$sq75 = "REG1(0xFF)";
+
+// Definition of regular/delay volume
+//$lead_l = "CHANVOL(0x0C)";
+$lead_l = "CHANVOL(0x0C)";
+$lead_mid = "CHANVOL(0x08)";
+//$lead_q = "CHANVOL(0x06)";
+$lead_q = "CHANVOL(0x07)";
+$lead_m1 = "CHANVOL(0x08)";
+$lead_m2 = "CHANVOL(0x0A)";
+$back_l = "CHANVOL(0x08)";
+$back_q = "CHANVOL(0x04)";
+
+$sq_q = "CHANVOL(0x05)";
+$sq_l = "CHANVOL(0x0A)";
+$sq_q2 = "CHANVOL(0x06)";
+$sq_l2 = "CHANVOL(0x0C)";
+$sq_q3 = "CHANVOL(0x08)";
+$sq_l3 = "CHANVOL(0x0C)";
+
+$legato = "REG2(0x08)";
+$intro_staccato = "REG2(0x38)";
+$lead_staccato = "REG2(0x48)";
+$lead_staccato_16 = "REG2(0x78)";
+$back_staccato = "REG2(0x38)";
+
+//*******************************
+// Triangle defines
+//*******************************
+//$trkick = "f3 1 eb3 1 c3 1 a2 1 f#2 1 d2 1";
+//$trkick = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+//$trkick = "c3 2 f#2 2 c1 2";
+//$trkick_full = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+$trkick_full = "g3 1 e3 1 c#3 1 a#2 1 g2 1 e2 2";
+$trkick_upper = "g3 1 e3 1 c#3 1";
+$trkick_lower = "a#2 1 g2 1 e2 2";
+//$trkick = "c3 2 f2 2 a1 3";
+$trkick = "c3 1 a#2 1 g2 1 d2 1 b1 1 a1 2";
+//$revtrkick = "a1 1 b1 1 d2 1 g2 1 a#2 1 c3 1";
+$revtrkick = "a1 2 g2 2 c3 3";
+//$tomhi = "c4 1 a#3 1 g3 1 d3 1 b2 1 a2 1";
+$tomhi = "c4 2 e3 2 a2 3";
+//$tommid = "f#3 1 e3 1 c#3 1 a#2 1 g#2 1 f2 1";
+//$tommid = "f#3 1 e3 1 c#3 1 a#2 1 g#2 1 f2 1";
+$tommid = "f#3 2 b2 2 f2 3";
+//$trkick = "c3 2 f2 2 a1 2";
+//$trkick_down = "c2 2 f#1 2 c#0 3";
+$trkick_down = "g2 1 e2 1 c#2 1 a#1 1 g1 1 e1 2";
+$trrevsn = "g#1 1 b1 1 e2 1 f#2 1 a2 1 b2 1 d3 1 e3 1 g3 1 a3 1 c4 1 d4 1";
+
+//*******************************
+// Noise defines
+//*******************************
+$kick = "NOISE(0x81, 0x8F)";
+//$sn = "NOISE(0x81, 0x06)";
+//$sn = "REG2(0x78) NOISE(0x96, 0x06)";
+//$sn = "REG2(0x68) NOISE(0x94, 0x09)";
+$sn = "REG2(0x68) NOISE(0x97, 0x08)";
+$snshort = "REG2(0x58) NOISE(0x97, 0x08)";
+$ch = "NOISE(0x81, 0x01)";
+//$oh = "NOISE(0x85, 0x01)";
+//$oh = "NOISE(0xA5, 0x01)";
+$oh = "NOISE(0xA7, 0x01)";
+$crash = "REG2(0x30) NOISE(0x8C, 0x01)";
+$hiss = "NOISE(0x92, 0x08)";
+
+
+
+//*******************************
+// Misc defines
+//*******************************
+// Sweep
+$sweepoff = "REG3(0x00)";
+$introsweep = "REG3(0x93)";
+
+//$meldecay = "DECAY(2)";
+//$backdecay = "DECAY(1)";
+$meldecay = "REG2(0x08)";
+$backdecay = "REG2(0x38)";
+$melstaccato = "REG2(0x38)";
+$mellegato = "REG2(0x08)";
+
+//*******************************
+// Song init
+//*******************************
+// Song init. This only needs to happen on one channel,
+// and only for cave music (because it plays first no matter what).
+_SQ1 = { DRIVERDELAY(0x00) TEMPO(1) MASTSHIFT(0) };
+//_SQ1 = { TEMPO(1) };
+// Channel init
+/*_SQ1 = { CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay) $lead_l
+	 $sq50 REG2(0x08) };
+_SQ2 = { CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay) $lead_l
+	 $sq50 REG2(0x08) };
+_TRI = { CHANSHIFT(0) EFFECTS(0)
+	 REG1(0xFF) REG2(0x08) }; */
+
+// "Declarations" of jump points for each channel.
+// This is an esoteric workaround for the fact that the compiler is
+// one-pass, making it normally impossible (e.g.) to jump from an earlier
+// position to one defined later. By using "+" instead of "^" when
+// defining a label, the position will be offset by 3. Assuming the
+// label is immediately followed by a JUMP() command, the label
+// then references the data following the jump. The data for the three
+// "real" channels will be placed on the "generic" channel in the middle
+// of the file. To save space, we need to put some data in those
+// channels, so the data at the end of the track goes there.
+//
+// Ultimately, this is a hacky and entirely too complicated way of getting
+// tracks to loop to an arbitrary point.
+_SQ1 = { +sq1_reentry };
+_SQ2 = { +sq2_reentry };
+_TRI = { +tri_reentry };
+
+//*******************************
+// "Generic" data
+//*******************************
+
+_GENERICADDR = $freespace_1;
+
+
+
+_GENERIC = {
+
+  ^lead_main_1
+  
+  a#2 $16
+  
+  ^lead_main_1_entry2
+  
+  a#1 $32  r $32
+  a#2 $16
+  b2 $16
+  b1 $32 r $32
+  b2 $16
+  c#3 $16
+  c#2 $32 r $32
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_2
+  
+  b2 $16
+  b1 $32  r $32
+  b2 $16
+  a#2 $16
+  a#1 $32 r $32
+  a#2 $16
+  a2 $16
+  a1 $32 r $32
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_1
+  
+  $kick   a#1 $32 r $32
+          a#2 $16
+  $sn     a#1 $32 r $32
+  $kick   b1 $16
+          b2 $16
+  $kick   b1 $16
+  $sn     c#2 $32 r $32
+          c#3 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_2
+  
+  $kick   b1 $32 r $32
+          b2 $16
+  $sn     b1 $32 r $32
+  $kick   a#1 $16
+          a#2 $16
+  $kick   a#1 $16
+  $sn     a1 $32 r $32
+          a2 $16
+  
+  RET()
+};
+
+_GENERIC = { ^sq1_overflow
+   EFFECTS(0) DECAY($defaultdecay)
+	 REG2(0x08) };
+
+_GENERIC = {
+
+  $lead_l
+  
+  ^sq1_loop
+  
+  $sq25
+  SETLOOP()
+    CHANSHIFT(0)
+    CALL(^lead_main_1)
+    CHANSHIFT(5)
+    CALL(^lead_main_1)
+    CHANSHIFT(0)
+    CALL(^lead_main_1)
+    CALL(^lead_main_2)
+    $sq50
+  REPLAYLOOP(2)
+  
+  JUMP(^sq1_loop)
+//  c0 0
+  
+//  JUMP(+sq1_reentry)
+};
+
+_GENERIC = { ^sq2_overflow
+   EFFECTS(0) DECAY($defaultdecay)
+	 REG2(0x08) };
+
+_GENERIC = {
+
+  $lead_l
+
+  r 192
+  
+  ^sq2_loop
+  
+  $sq25
+  SETLOOP()
+    CHANSHIFT(7)
+    CALL(^lead_main_1)
+    CHANSHIFT(12)
+    CALL(^lead_main_1)
+    CHANSHIFT(7)
+    CALL(^lead_main_1)
+    CALL(^lead_main_2)
+    $sq50
+  REPLAYLOOP(1)
+  
+  JUMP(^sq2_loop)
+  
+//  c0 0
+  
+//  JUMP(+sq2_reentry)
+};
+
+// no room for init at original location due to shared channels,
+// so it goes here
+
+_GENERIC = {
+
+  ^tri_overflow
+  
+  r 174
+  SETLOOP()
+    $snshort r $16
+  REPLAYLOOP(2)
+
+  ^tri_loop
+
+  CHANSHIFT(0)
+  CALL(^bass_main_1)
+  CHANSHIFT(5)
+  CALL(^bass_main_1)
+  CHANSHIFT(0)
+  CALL(^bass_main_1)
+  CALL(^bass_main_2)
+
+  JUMP(^tri_loop)
+
+//  JUMP(^sq1_loop)
+
+//  JUMP(^tri_reentry)
+};
+
+//*******************************
+// "Physical" channel data
+//*******************************
+
+_SQ1 = { 
+
+  JUMP(^sq1_overflow)
+
+};
+
+_SQ2 = {
+
+  JUMP(^sq2_overflow)
+  
+};
+
+_TRI = { 
+   // turn on wacky-ass auto-noise mode
+   EFFECTS(0x40)
+	 REG1(0x7F) REG2(0x08) REG3(0x41) };
+
+_TRI = {
+
+  JUMP(^tri_overflow)
+
+};
+
+

@@ -1,0 +1,2846 @@
+// Title
+
+// Free space defines
+// Update code for bonus game objects
+// 36309 / 0x330 / 816
+$freespace_1 = "0x31AB2";
+// Ending text
+// at least 0x497 / 1175 (probably more before + after)
+//$freespace_2 = "0xAD22";
+// 44099 / 0x576 / 1398
+//$freespace_2 = "0x32C43";
+$freespace_2 = "0x32C7A";
+// Ending music
+// sq2 8DB9 F???
+// tri 8DC8 D???
+// sq1 8DD5 FC???
+// so 0x118 / 280 total?
+// 36309 / this is actually 240 or less
+$freespace_3 = "0x30DD5";
+// ending palettes + ????
+// goes all the way to the end of the bank????
+// 45715 / 0xD6D / 3437????
+$freespace_4 = "0x332D7";
+// bonus round object layouts (starting from 2nd round -- 1st round
+// is used for various code enhancements)
+// 41096 / at least 0x11F / 287?
+$freespace_5 = "0x32088";
+
+//$freespace_6 = "0x30ED2";
+$freespace_6 = "0x31742";
+
+// Overwrite the real channels at their original locations so we
+// don't have to update the pointers
+// pointers at 0x87FA
+// 0xE6 / 230
+_SQ1ADDR = 0x30AC3;
+// 0x134 / 308
+_SQ2ADDR = 0x30BA9;
+// 0xDC? / 220
+_TRIADDR = 0x30CDD;
+
+$defaultdecay = "10";
+
+// Note duration macros. 32nd = 3 ticks, 16th = 6, etc.
+/*$32 = "3";
+$16 = "6";
+$8  = "12";
+$4  = "24";
+$2  = "48";
+$1  = "96";
+$24 = "9";
+$12 = "18";
+$6 = "36";
+$3 = "72"; */
+$32_1 = "4";
+$32_2 = "3";
+$16 = "7";
+$8  = "14";
+$4  = "28";
+$2  = "56";
+$1  = "112";
+// WRONG
+//$24 = "10";
+$12 = "21";
+$6 = "42";
+$3 = "84";
+
+
+	 
+
+//*******************************
+// Square defines
+//*******************************
+// Pulse width register macros
+$sq12 = "REG1(0x3F)";
+$sq25 = "REG1(0x7F)";
+$sq50 = "REG1(0xBF)";
+$sq75 = "REG1(0xFF)";
+
+// Definition of regular/delay volume
+//$lead_l = "CHANVOL(0x0C)";
+$lead_l = "CHANVOL(0x0A)";
+$lead_mid = "CHANVOL(0x08)";
+//$lead_q = "CHANVOL(0x06)";
+$lead_q = "CHANVOL(0x05)";
+$lead_m1 = "CHANVOL(0x08)";
+$lead_m2 = "CHANVOL(0x0A)";
+$back_l = "CHANVOL(0x08)";
+$back_q = "CHANVOL(0x04)";
+
+$sq_q = "CHANVOL(0x05)";
+$sq_l = "CHANVOL(0x0A)";
+$sq_q2 = "CHANVOL(0x06)";
+$sq_l2 = "CHANVOL(0x0C)";
+$sq_q3 = "CHANVOL(0x08)";
+$sq_l3 = "CHANVOL(0x0C)";
+
+$legato = "REG2(0x08)";
+$intro_staccato = "REG2(0x38)";
+$lead_staccato = "REG2(0x48)";
+$lead_staccato_16 = "REG2(0x78)";
+$back_staccato = "REG2(0x38)";
+
+//*******************************
+// Triangle defines
+//*******************************
+//$trkick = "f3 1 eb3 1 c3 1 a2 1 f#2 1 d2 1";
+//$trkick = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+//$trkick = "c3 2 f#2 2 c1 2";
+//$trkick_full = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+$trkick_full = "g3 1 e3 1 c#3 1 a#2 1 g2 1 e2 2";
+$trkick_upper = "g3 1 e3 1 c#3 1";
+$trkick_lower = "a#2 1 g2 1 e2 2";
+$trkick = "c3 2 f#2 2 c1 3";
+//$trkick_down = "c2 2 f#1 2 c#0 3";
+$trkick_down = "g2 1 e2 1 c#2 1 a#1 1 g1 1 e1 2";
+$trrevsn = "g#1 1 b1 1 e2 1 f#2 1 a2 1 b2 1 d3 1 e3 1 g3 1 a3 1 c4 1 d4 1";
+
+//*******************************
+// Noise defines
+//*******************************
+$kick = "NOISE(0x81, 0x8F)";
+//$sn = "NOISE(0x81, 0x06)";
+//$sn = "REG2(0x78) NOISE(0x96, 0x06)";
+$sn = "REG2(0x68) NOISE(0x97, 0x08)";
+$ch = "NOISE(0x81, 0x01)";
+//$oh = "NOISE(0x85, 0x01)";
+//$oh = "NOISE(0xA5, 0x01)";
+$oh = "NOISE(0xA7, 0x01)";
+$crash = "REG2(0x30) NOISE(0x8C, 0x01)";
+$hiss = "NOISE(0x92, 0x08)";
+
+
+
+//*******************************
+// Misc defines
+//*******************************
+// Sweep
+$sweepoff = "REG3(0x00)";
+$introsweep = "REG3(0x93)";
+
+//$meldecay = "DECAY(2)";
+//$backdecay = "DECAY(1)";
+$meldecay = "REG2(0x08)";
+$backdecay = "REG2(0x38)";
+$melstaccato = "REG2(0x38)";
+$mellegato = "REG2(0x08)";
+
+//*******************************
+// Song init
+//*******************************
+// Song init. This only needs to happen on one channel,
+// and only for cave music (because it plays first no matter what).
+_SQ1 = { DRIVERDELAY(0x00) TEMPO(1) MASTSHIFT(0) };
+//_SQ1 = { TEMPO(1) };
+// Channel init
+_SQ1 = { CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay) $lead_l
+	 $sq50 REG2(0x08) };
+_SQ2 = { CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay) $lead_l
+	 $sq50 REG2(0x08) };
+_TRI = { CHANSHIFT(0) EFFECTS(0)
+	 REG1(0xFF) REG2(0x08) };
+
+// "Declarations" of jump points for each channel.
+// This is an esoteric workaround for the fact that the compiler is
+// one-pass, making it normally impossible (e.g.) to jump from an earlier
+// position to one defined later. By using "+" instead of "^" when
+// defining a label, the position will be offset by 3. Assuming the
+// label is immediately followed by a JUMP() command, the label
+// then references the data following the jump. The data for the three
+// "real" channels will be placed on the "generic" channel in the middle
+// of the file. To save space, we need to put some data in those
+// channels, so the data at the end of the track goes there.
+//
+// Ultimately, this is a hacky and entirely too complicated way of getting
+// tracks to loop to an arbitrary point.
+_SQ1 = { +sq1_reentry };
+_SQ2 = { +sq2_reentry };
+_TRI = { +tri_reentry };
+
+//*******************************
+// "Generic" data
+//*******************************
+
+_GENERICADDR = $freespace_1;
+
+
+/*_GENERIC = {
+
+  ^lead_intro_1
+
+  a3 $16
+  
+  REG3(0xBE)
+  a3 49
+  
+  e4 98
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_intro_2
+  
+  e4 $16
+  
+  ^lead_intro_2_entry2
+  
+  g4 $16
+  e4 $16
+  d4 $16
+
+  RET()
+}; */
+
+
+
+
+_GENERICADDR = $freespace_2;
+
+_GENERIC = {
+
+  ^lead_newintro_1
+
+          a2 $12  $lead_q e4 $16
+  $lead_l a2 $8   $lead_q e4 $16
+  $lead_l e3 $16  $lead_q a2 $16
+  $lead_l e3 $16
+          f3 $8
+          e3 $8
+          c3 $8
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_newintro_2
+
+          g2 $12  
+          
+  ^lead_newintro_2_entry2
+  
+                  $lead_q g2 $16
+  $lead_l g2 $8   $lead_q g2 $16
+  $lead_l c3 $16  $lead_q g2 $16
+  $lead_l c3 $16
+          d3 $8
+          c3 $8
+          b2 $8
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_newintro_2_alt
+
+          g2 $12  
+          
+  ^lead_newintro_2_alt_entry2
+  
+                  $lead_q g2 $16
+  $lead_l g2 $8   $lead_q g2 $16
+  $lead_l c3 $16  $lead_q g2 $16
+  $lead_l c3 $16
+          d3 $8
+          c3 $8
+          b2 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_newintro_1
+  
+          a2 $32_1  $back_q e3 $32_2
+  $back_l e3 $32_1  $back_q a2 $32_2
+  $back_l e3 $32_1  $back_q a2 $32_2
+  $back_l a3 $32_1  $back_q e3 $32_2
+  $back_l a3 $32_1  $back_q e3 $32_2
+  $back_l e3 $32_1  $back_q a3 $32_2
+  $back_l e3 $32_1  $back_q a3 $32_2
+  $back_l a2 $32_1  $back_q e3 $32_2
+  
+  $lead_l
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_newintro_1
+  
+  $crash  $trkick
+          a2 $8
+          r $16
+          a2 $8
+          a3 $16
+          e3 $16
+          a2 $16
+          e3 $16
+          f3 $8
+          e3 $8
+          c3 $8
+          
+          g2 $12
+          g2 $16
+          g2 $8
+          g2 $16
+          c3 $16
+          g2 $16
+          c3 $16
+          d3 $8
+          c3 $8
+  $crash  $trkick
+  $crash  $trkick
+  
+  $crash  $trkick
+          a2 $16
+          r $8
+          
+  $kick   $trkick
+          a2 $16
+          r $16
+          e3 $16
+          
+  $kick   $trkick
+          f2 $16
+          f3 $8
+          
+  $kick   $trkick
+          f2 $16
+          c3 $8
+          
+  $kick   $trkick
+          c3 $16
+          r $8
+          
+  $sn     $trkick
+          c3 $32_1 r $32_2
+          c3 $16
+  $sn     c3 $32_1 r $32_2
+          
+  $sn     $trkick
+  $sn     e2 $16
+  $kick   e3 $32_1 r $32_2
+  $sn     e2 $16
+          
+  $sn     $trkick
+          e2 $32_1 r $32_2
+  $sn     e2 $16
+  $ch     e2 $32_1 r $32_2
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_bridge_2_2
+
+  $sq25
+  SETLOOP()
+    $lead_l g5 $32_1   $lead_q g5 $32_2
+  REPLAYLOOP(2)
+  $sq50
+  $lead_l g5 $32_1   $lead_q g5 $32_2
+  $lead_l g5 $32_1   $lead_q g5 $32_2
+  $lead_l
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_bridge_3
+  
+  $sq25
+          a#5 $8
+  $lead_q a#5 $8
+  $lead_l a5 $8
+  $lead_q a5 $8
+  $lead_l g5 $16
+          d5 $16
+  $lead_q g5 $16
+  $lead_l a4 $12
+  $lead_q a4 $8
+  $lead_l
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_bridge_4
+  // pre-shifted
+  
+  $sq50 c5 $16
+  $sq25 c5 $16
+  $sq12 c5 $16
+  $sq25 c5 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_chorus_7
+  
+  e4 $16
+  g4 $16
+  a4 $16
+  e4 $16
+  c5 $16
+  d5 $16
+  g5 $16
+  d6 $16
+  a5 $4
+  REG3(0xA4) a5 $8
+
+  RET()
+};
+
+//$lead_kick_sweep = "REG3(0x92)";
+$lead_kick = "REG3(0x92) a2 7";
+
+/*_GENERIC = {
+
+  ^lead_intro_3
+  
+  $lead_kick
+  a1 $16
+
+  ^lead_intro_3_entry2
+  
+  a2 $32_1 r $32_2
+  a1 $16
+  
+  $lead_kick
+  a1 $32_1 r $32_2
+  a1 $16
+  a1 $32_1 r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_intro_4
+  
+  $lead_kick
+  f2 $32_1 r $32_2
+  e2 $16
+  f2 $16
+  
+  $lead_kick
+  f2 $16
+  e2 $32_1 r $32_2
+  c2 $32_1 r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_intro_5
+  
+  $lead_kick
+  d2 $16
+  g2 $32_1 r $32_2
+  d2 $16
+  
+  $lead_kick
+  d2 $32_1 r $32_2
+  c2 $16
+  d2 $32_1 r $32_2
+
+  RET()
+}; */
+
+$lead_intro_g_instrchng1 = "4";
+_GENERIC = {
+
+  ^lead_intro_6
+  
+  $sq25 a1 $lead_intro_g_instrchng1
+  $sq50 a1 3
+  $sq25 c2 $lead_intro_g_instrchng1
+  $sq50 c2 3
+  $sq25 d2 $lead_intro_g_instrchng1
+  $sq50 d2 10
+  
+  $sq25 a2 $lead_intro_g_instrchng1
+  $sq50 a2 10
+  $sq25 e2 $lead_intro_g_instrchng1
+  $sq50 e2 10
+  
+  
+  
+  $sq25 a1 $lead_intro_g_instrchng1
+  $sq50 a1 3
+  $sq25 c2 $lead_intro_g_instrchng1
+  $sq50 c2 3
+  $sq25 f2 $lead_intro_g_instrchng1
+  $sq50 f2 10
+  
+  $sq25 a2 $lead_intro_g_instrchng1
+  $sq50 a2 10
+  $sq25 f2 $lead_intro_g_instrchng1
+  $sq50 f2 10
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_intro_7
+  
+  $sq25 c2 $lead_intro_g_instrchng1
+  $sq50 c2 3
+  $sq25 e2 $lead_intro_g_instrchng1
+  $sq50 e2 3
+  $sq25 g2 $lead_intro_g_instrchng1
+  $sq50 g2 10
+  
+  $sq25 c3 $lead_intro_g_instrchng1
+  $sq50 c3 10
+  $sq25 g2 $lead_intro_g_instrchng1
+  $sq50 g2 10
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_intro_8
+  
+  $sq25 g#2 $lead_intro_g_instrchng1
+  $sq50 g#2 3
+  $sq25 b2 $lead_intro_g_instrchng1
+  $sq50 b2 3
+  $sq25 e3 $lead_intro_g_instrchng1
+  $sq50 e3 10
+  
+  $sq25 g#3 $lead_intro_g_instrchng1
+  $sq50 g#3 10
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_1
+  
+  $sq25
+            a3 $16
+            e3 $16
+  $lead_q   a3 $16
+  $lead_l   c3 $16
+            d3 $16
+  $lead_q   c3 $16
+  $lead_l   a3 $16
+  $sq50
+            c4 $16
+  $sq25
+  $lead_q   a3 $16
+  $sq50
+  $lead_l   d4 $16
+            e4 $16
+  $lead_q   d4 $16
+  $lead_l   g4 $16
+  $sq12
+            e4 $16
+  $sq50
+  $lead_q   g4 $16
+  $sq12
+  $lead_l   a4 $16
+            g4 $16
+  $lead_q   a4 $16
+  $lead_l   d4 $16
+  $sq25
+            e4 $16
+  $sq12
+  $lead_q   d4 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_2
+  
+  $sq25
+  $lead_l   g4 $16
+            c5 $16
+  $lead_q   g4 $16
+  $lead_l   c5 $16
+  $sq50
+            d5 $16
+  $sq25
+  $lead_q   c5 $16
+  $sq50
+  $lead_l   c5 $16
+            b4 $16
+  $lead_q   c5 $16
+            b4 $16
+            
+  r $16
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_3
+  
+  $sq25
+  $lead_l   d4 $16
+            c4 $16
+  $lead_q   d4 $16
+  $lead_l   g#3 $16
+  $sq50
+            b3 $16
+  $sq25
+  $lead_q   g#3 $16
+  $sq50
+  $lead_l   e4 $16
+            c4 $16
+  $lead_q   e4 $16
+            c4 $16
+            
+  r $16
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_4
+  
+  $sq25
+  $lead_l   d4 $16
+            c4 $16
+  $lead_q   d4 $16
+  $lead_l   g#3 $16
+  $sq50
+            c4 $16
+  $sq25
+  $lead_q   g#3 $16
+  $sq50
+  $lead_l   d4 $16
+            c4 $16
+  $lead_q   d4 $16
+            c4 $16
+            
+  r $16
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_chorus_2
+  
+  $sq50
+  
+  $lead_l g5 $8  $lead_q  g5 $16
+  $lead_l e5 $8  $lead_q  e5 $16
+  $lead_l c5 $8
+  
+  b4 $2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_chorus_3
+  
+  $sq25
+  
+          e4 $16  $lead_q  e4 $16
+  $lead_l e4 $32_1  r $32_2
+          d4 $16  $lead_q  d4 $16
+  $lead_l d4 $32_1  r $32_2
+          c4 $8
+  
+          g#3 $16  $lead_q  g#3 $16
+  $lead_l g#3 $32_1  r $32_2
+          c4 $16  $lead_q  c4 $16
+  $lead_l c4 $32_1  r $32_2
+          d4 $8
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_chorus_3_2
+  
+  $lead_staccato_16
+    SETLOOP()
+              d#4 $8
+      $lead_q d#4 $16
+      $lead_l
+      CHANSHIFT(-1)
+    REPLAYLOOP(1)
+    CHANSHIFT(0)
+    c4 $8
+  $legato
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_chorus_4
+  
+  b3 $4
+  c4 $8
+  REG3(0x96) c4 $8
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_chorus_5
+  
+  $sq50
+  
+  $lead_l g5 $8  $lead_q  g5 $16
+  $lead_l d#5 $8  $lead_q  d#5 $16
+  $lead_l c5 $8
+  
+  b4 $2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_chorus_6
+  
+  c4 35
+  REG3(0x93) c4 $8
+  r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_bridge_1
+  
+  $sq50
+  
+  g4 $32_1 r $32_2
+  d4 $32_1 r $32_2
+  a4 $16
+  a#4 $16
+  d4 $16
+  REG3(0x93) d4 $16
+  g5 $16
+  REG3(0x93) g5 $16
+  f5 $32_1 r $32_2
+  c5 $32_1 r $32_2
+  a#4 $16
+  a4 $16
+  f4 $16
+  c4 $32_1 r $32_2
+  f4 $32_1 r $32_2
+  g4 $16
+  
+  //------------------
+  
+  a#4 $16
+  REG3(0x9C) a#4 $16
+  c5 $16
+  REG3(0x9C) c5 $16
+  d5 $16
+  c5 $16
+  a#4 $32_1 r $32_2
+  g4 $32_1 r $32_2
+  a#4 $16
+  c5 $16
+  g4 $16
+  REG3(0x93) g4 $16
+  $sq25
+  f3 $16
+  g3 $16
+  f3 $16
+  REG3(0x93) f3 $16
+  
+  //-------------------
+  
+          d3 $32_1          r $32_2
+          f3 $32_1  $lead_q d3 $32_2
+  $lead_l g3 $32_1  $lead_q f3 $32_2
+  $lead_l a#3 $32_1  $lead_q g3 $32_2
+  $lead_l a3 $32_1  $lead_q a#3 $32_2
+  $lead_l a#3 $32_1  $lead_q a3 $32_2
+  $lead_l c4 $32_1  $lead_q a#3 $32_2
+  $lead_l d4 $32_1  $lead_q c4 $32_2
+  $lead_l a#3 $32_1  $lead_q d4 $32_2
+  $lead_l d4 $32_1  $lead_q a#3 $32_2
+  $lead_l f4 $32_1  $lead_q d4 $32_2
+  $lead_l g4 $32_1  $lead_q f4 $32_2
+  $lead_l d4 $32_1  $lead_q g4 $32_2
+  $lead_l g4 $32_1  $lead_q d4 $32_2
+  $lead_l a4 $32_1  $lead_q g4 $32_2
+  $lead_l a#4 $32_1  $lead_q a4 $32_2
+  
+  //--------------------
+  
+  $lead_l
+  d5 $16
+  f5 $16
+  a#4 $16
+  f4 $16
+  g5 $16
+  REG3(0x93) g5 $16
+  g4 $16
+          g3 $32_1  $lead_q g4 $32_2
+  SETLOOP()
+    $lead_l f#4 $32_1  $lead_q g4 $32_2
+    $lead_l g4 $32_1  $lead_q f#4 $32_2
+  REPLAYLOOP(2)
+  $lead_l a4 $32_1  $lead_q g4 $32_2
+  $lead_l
+  a#4 $16
+
+  RET()
+};
+
+
+
+_GENERICADDR = $freespace_4;
+
+_GENERIC = {
+
+  ^lead_chorus_1
+  
+  $sq25
+  
+  SETLOOP()
+    $lead_l a4 $32_1  $lead_q  a4 $32_2
+  REPLAYLOOP(2)
+  $lead_l c5 $32_1  $lead_q  a4 $32_2
+  SETLOOP()
+    $lead_l c5 $32_1  $lead_q  c5 $32_2
+  REPLAYLOOP(1)
+  $lead_l e5 $32_1  $lead_q  c5 $32_2
+  $lead_l e5 $32_1  $lead_q  e5 $32_2
+  
+  // I22 on a base-7 song, ouch
+  // length: 8, 56 ticks total
+//  SETLOOP()
+//    $lead_l a5 2  $lead_q  a5 2
+//  REPLAYLOOP(13)
+  
+  CHANVOL(0x04) a5 2  CHANVOL(0x02) a5 2
+  CHANVOL(0x04) a5 2  CHANVOL(0x02) a5 2
+  CHANVOL(0x05) a5 2  CHANVOL(0x03) a5 2
+  CHANVOL(0x05) a5 2  CHANVOL(0x03) a5 2
+  CHANVOL(0x06) a5 2  CHANVOL(0x03) a5 2
+  CHANVOL(0x06) a5 2  CHANVOL(0x03) a5 2
+  CHANVOL(0x07) a5 2  CHANVOL(0x04) a5 2
+  CHANVOL(0x08) a5 2  CHANVOL(0x04) a5 2
+  CHANVOL(0x09) a5 2  CHANVOL(0x05) a5 2
+  CHANVOL(0x0A) a5 2  CHANVOL(0x05) a5 2
+  CHANVOL(0x0A) a5 2  CHANVOL(0x05) a5 2
+  CHANVOL(0x0A) a5 2  CHANVOL(0x05) a5 2
+  CHANVOL(0x0A) a5 2  CHANVOL(0x05) a5 2
+  CHANVOL(0x0A) a5 2  CHANVOL(0x05) a5 2
+  
+/*  $lead_l a5 2  $lead_q  a5 2
+  $lead_l a5 2  $lead_q  a5 2
+  CHANVOL(0x0B) a5 2  CHANVOL(0x06) a5 2
+  CHANVOL(0x07) a5 2  CHANVOL(0x04) a5 2
+  CHANVOL(0x05) a5 2  CHANVOL(0x04) a5 2
+  CHANVOL(0x06) a5 2  CHANVOL(0x03) a5 2
+  CHANVOL(0x07) a5 2  CHANVOL(0x04) a5 2
+  CHANVOL(0x08) a5 2  CHANVOL(0x04) a5 2
+  CHANVOL(0x09) a5 2  CHANVOL(0x05) a5 2
+  CHANVOL(0x0A) a5 2  CHANVOL(0x05) a5 2
+  CHANVOL(0x0B) a5 2  CHANVOL(0x06) a5 2
+  CHANVOL(0x0C) a5 2  CHANVOL(0x06) a5 2
+  CHANVOL(0x0C) a5 2  CHANVOL(0x06) a5 2
+  CHANVOL(0x0C) a5 2  CHANVOL(0x06) a5 2 */
+  
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_intro_1
+
+/*  r $2
+  
+  a4 8
+  a#4 8
+  b4 8
+  c5 8
+  c#5 8
+  d5 8
+  d#5 8 */
+  
+  r $1
+  
+  e5 98
+
+  RET()
+};
+
+
+
+$bass_intro2_1_firstentry = "$crash $trkick_full";
+
+_GENERIC = {
+
+  ^bass_intro2_1
+
+  $trkick_full
+  
+  ^bass_intro2_1_entry2
+  
+  a2 $16
+          
+  a3 $32_1  r $32_2
+  a2 $16
+
+  $trkick_full
+  a2 $32_1  r $32_2
+  a2 $16
+  a2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_intro2_2
+
+  $trkick_full
+  f2 $32_1 r $32_2
+          
+  e3 $16
+  f3 $16
+
+  $trkick_full
+  f3 $16
+  e3 $32_1  r $32_2
+  c3 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_intro2_3
+
+  $sn     $trkick_full
+  $sn     a2 $16
+          
+  $kick   a3 $32_1  r $32_2
+  $sn     a2 $16
+
+  $sn     $trkick_full
+          a2 $32_1  r $32_2
+  $sn     a2 $16
+  $sn     a2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_1_1
+
+  $oh     $trkick_full
+  ^bass_main_1_1_entry_3
+          a2 $16
+          
+  ^bass_main_1_entry_2
+          
+  $ch     a3 $32_1  r $32_2
+  $kick   a2 $16
+
+  $sn     $trkick_full
+          a2 $32_1  r $32_2
+  $kick   a2 $16
+  $ch     a2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_1_2
+
+  $kick   $trkick_full
+	        f2 $32_1 r $32_2
+          
+  $ch     e3 $16
+	        f3 $16
+
+  $sn     $trkick_full
+	        f3 $16
+  $ch     e3 $32_1  r $32_2
+  $ch     c3 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_2_1
+
+  $kick   $trkick_full
+          c3 $16
+  $ch     c4 $32_1  r $32_2
+  $kick   c3 $16
+
+  $sn     $trkick_full
+          c3 $32_1  r $32_2
+  $kick   c3 $16
+  $ch     c3 $32_1  r $32_2
+
+  RET()
+};
+
+
+_GENERIC = {
+
+  ^bass_main_2_2
+
+  $kick   $trkick_full
+	        g2 $16
+          
+  $ch     g3 $32_1  r $32_2
+	        g2 $16
+
+  $sn     $trkick_full
+	        g2 $32_1  r $32_2
+  $ch     g2 $16
+          g2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_4_1
+
+  $kick   $trkick_full
+          a2 $16
+  $ch     a3 $32_1  r $32_2
+  $kick   a2 $16
+
+  $sn     $trkick_full
+          a2 $32_1  r $32_2
+  $kick   a2 $16
+          a2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_4_1_alt
+
+  // this is the only line that differs
+  $oh     $trkick_full
+          a2 $16
+  $ch     a3 $32_1  r $32_2
+  $kick   a2 $16
+
+  $sn     $trkick_full
+          a2 $32_1  r $32_2
+  $kick   a2 $16
+          a2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_4_2
+  
+  $kick   $trkick_full
+          f2 $16
+  $ch     f3 $32_1  r $32_2
+          f2 $16
+
+  $sn     $trkick_full
+          f2 $32_1  r $32_2
+  $ch     f2 $16
+  $sn     f2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_5
+  
+  $kick   $trkick_full
+  $kick   e2 $16
+          e3 $32_1  r $32_2
+  $ch     e2 $16
+
+  $sn     $trkick_full
+          e2 $32_1  r $32_2
+  $ch     e2 $16
+          e2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_5_alt
+  
+  $sn     $trkick_full
+  $sn     e2 $16
+          e3 $32_1  r $32_2
+  $kick   e2 $16
+
+  $sn     $trkick_full
+          e2 $32_1  r $32_2
+  $kick   e2 $16
+  $sn     e2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_bridge_1
+  
+  $crash  $trkick_full
+          g2 $16
+          g3 $32_1  r $32_2
+          g2 $16
+
+  $kick   $trkick_full
+          g2 $32_1  r $32_2
+  $kick   g2 $16
+  $ch     g2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_bridge_2
+  
+  $sn     $trkick_full
+          f2 $16
+          f3 $32_1  r $32_2
+  $ch     f2 $16
+
+  $kick   $trkick_full
+          f2 $32_1  r $32_2
+          f2 $16
+          f2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_bridge_3
+  
+  $kick   $trkick_full
+          d#2 $16
+          d#3 $32_1  r $32_2
+  $ch     d#2 $16
+
+  $kick   $trkick_full
+          d#2 $32_1  r $32_2
+  $kick   d#2 $16
+          d#2 $32_1  r $32_2
+
+  RET()
+};
+
+/*_GENERIC = {
+
+  ^bass_main_2
+
+  $kick   $trkick_full
+	  f2 $32_1 r $32_2
+          
+  $ch     e3 $16
+	  f3 $16
+
+  $sn     $trkick_full
+	  f3 $16
+  $ch     e3 $32_1  r $32_2
+  $ch     c3 $32_1  r $32_2
+
+  RET()
+}; */
+
+_GENERIC = {
+
+  ^bass_main_5_2
+  
+  $sn     $trkick_full
+  $sn     e2 $16
+  $sn     e3 $32_1  r $32_2
+  $ch     e2 $16
+
+  $sn     $trkick_full
+          e2 $32_1  r $32_2
+  $sn     e2 $16
+          e2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_6
+  
+  $kick   $trkick_full
+  $kick   a2 $16
+  $ch     a3 $32_1  r $32_2
+  $sn     a2 $16
+
+  $sn     $trkick_full
+  $sn     a2 $32_1  r $32_2
+  $oh     a2 $16
+          a2 $32_1  r $32_2
+  
+  RET()
+  
+};
+
+_GENERIC = {
+
+  ^bass_main_6_alt
+  
+  $crash  $trkick_full
+  $sn     a2 $16
+          a3 $32_1  r $32_2
+  $kick   a2 $16
+
+  $sn     $trkick_upper   $sn     $trkick_lower
+  $sn     a2 $32_1  r $32_2
+  $sn     a2 $16
+  $sn     a2 $32_1  r $32_2
+  
+  RET()
+  
+};
+
+_GENERIC = {
+
+  ^bass_bridge_4
+  
+  $sn     $trkick_full
+  $kick   d2 $16
+          d3 $32_1  r $32_2
+          d2 $16
+
+  $kick   $trkick_full
+          d2 $32_1  r $32_2
+  $ch     d2 $16
+  $ch     d2 $32_1  r $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_bridge_5
+  
+  $sn     $trkick_full
+
+  ^bass_bridge_5_entry2
+  
+          d2 $16
+  $kick   d3 $16
+  $ch     d3 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_bridge_6
+  
+  $sn     $trkick_full
+  $sn     d2 $16
+  $sn     d3 $8
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_bridge_6_2
+  
+  $sn     $trkick_full
+  $sn     d2 $16
+  $sn     d3 $16
+  $sn     d3 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_bridge_7
+  
+  $crash  $trkick_full
+          d2 $16
+          d3 $8
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_end
+  
+  $sn     $trkick_full
+          e2 $16
+  $sn     e3 $32_1 r $32_2
+          e2 $16
+  
+  $sn     $trkick_full
+  $sn     e2 $32_1 r $32_2
+  $sn     e2 $16
+  $sn     e2 $32_1 r $32_2
+  
+  $crash  a2 $2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_bridge_2
+  
+  $sq50
+  
+          a#4 $16
+          c5 $16
+  $lead_q a#4 $16
+  $lead_l d5 $16
+          g4 $16
+  $lead_q d5 $16
+  $lead_l a#4 $16
+          c5 $16
+          d5 $16
+          g4 $16
+  $lead_q d5 $16
+  
+  RET()
+};
+
+/*_GENERIC = {
+
+  ^back_main_1
+  
+  e3 $16
+  c3 $8
+  a2 $16
+  b2 $8
+  
+  f3 $16
+  a3 $8
+  b3 $16
+  c4 $8
+  
+  e4 $16
+  c4 $8
+  f4 $16
+  e4 $8
+  
+  b3 $16
+  c4 $8
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_main_2
+  
+  e4 $16
+  a4 $8
+  
+  a4 $16
+  b4 $8
+  a4 $16
+  g4 $4
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_main_3
+  
+  b3 $16
+  a3 $8
+  
+  e3 $16
+  g#3 $8
+  b3 $16
+  g#3 $4
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_main_4
+  
+  b3 $16
+  a3 $8
+  
+  f3 $16
+  g#3 $8
+  b3 $16
+  g#3 $4
+
+  RET()
+}; */
+
+_GENERIC = {
+
+  ^back_main_1
+  
+            e3 $16
+            c3 $16
+  $lead_q   e3 $16
+  $lead_l   a2 $16
+            b2 $16
+  $lead_q   a2 $16
+  $lead_l   f3 $16
+            a3 $16
+  $lead_q   f3 $16
+  $lead_l   b3 $16
+            c4 $16
+  $lead_q   b3 $16
+  $lead_l   e4 $16
+            c4 $16
+  $lead_q   e4 $16
+  $lead_l   f4 $16
+            e4 $16
+  $lead_q   f4 $16
+  $lead_l   b3 $16
+            c4 $16
+  $lead_q   b3 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_main_2
+  
+  $lead_l   e4 $16
+            a4 $16
+  $lead_q   e4 $16
+  $lead_l   a4 $16
+            b4 $16
+  $lead_q   a4 $16
+  $lead_l   a4 $16
+            g4 $16
+  $lead_q   a4 $16
+            g4 $16
+            
+  r $16
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_main_3
+  
+  $lead_l   b3 $16
+            a3 $16
+  $lead_q   b3 $16
+  $lead_l   e3 $16
+            g#3 $16
+  $lead_q   e3 $16
+  $lead_l   b3 $16
+            g#3 $16
+  $lead_q   b3 $16
+            g#3 $16
+            
+  r $16
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_main_4
+  
+  $lead_l   b3 $16
+            a3 $16
+  $lead_q   b3 $16
+  $lead_l   f3 $16
+            g#3 $16
+  $lead_q   f3 $16
+  $lead_l   b3 $16
+            g#3 $16
+  $lead_q   b3 $16
+            g#3 $16
+            
+  r $16
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_chorus_1
+  
+  $sq25
+  
+           a2 $32_1 r $32_2
+           a2 $16
+           a2 $32_1   $lead_q  a2 $32_2
+  $lead_l  c3 $32_1   $lead_q  a2 $32_2
+  $lead_l  c3 $16
+           c3 $32_1   $lead_q  c3 $32_2
+  $lead_l  e3 $32_1   $lead_q  c3 $32_2
+  $lead_l  e3 $16
+  
+  $sq50
+  
+  SETLOOP()
+    $lead_l  f3 $32_1   $lead_q  f3 $32_2
+  REPLAYLOOP(3)
+  
+  $lead_l  c4 $32_1   $lead_q  f3 $32_2
+  SETLOOP()
+    $lead_l  c4 $32_1   $lead_q  c4 $32_2
+  REPLAYLOOP(2)
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_chorus_2
+  
+  $sq25
+  
+  SETLOOP()
+    $lead_l  e4 $32_1   $lead_q  e4 $32_2
+  REPLAYLOOP(1)
+  e4 $16
+  
+  SETLOOP()
+    $lead_l  c4 $32_1   $lead_q  c4 $32_2
+  REPLAYLOOP(1)
+  c4 $16
+  
+  $lead_l
+  g4 $8
+  
+           g4 $32_1            r  $32_2
+           d4 $32_1   $lead_q  g4 $32_2
+  $lead_l  b3 $32_1   $lead_q  d4 $32_2
+  $lead_l  g3 $32_1   $lead_q  b3 $32_2
+  $lead_l  d3 $32_1   $lead_q  g3 $32_2
+  $lead_l  b2 $32_1   $lead_q  d3 $32_2
+  $lead_l  g2 $32_1   $lead_q  b2 $32_2
+  $lead_l  d2 $32_1   $lead_q  g2 $32_2
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_chorus_3
+  
+  $sq25
+  
+          a3 $16  $lead_q  e4 $16
+  $lead_l a3 $32_1  r $32_2
+          f#3 $16  $lead_q  d4 $16
+  $lead_l f#3 $32_1  r $32_2
+          e3 $8
+  
+          f3 $16  $lead_q  g#3 $16
+  $lead_l f3 $32_1  r $32_2
+          g#3 $16  $lead_q  c4 $16
+  $lead_l g#3 $32_1  r $32_2
+          a#3 $8
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_chorus_3_2
+  
+  $lead_staccato_16
+    SETLOOP()
+              g3 $8
+      $lead_q g3 $16
+      $lead_l
+      CHANSHIFT(-1)
+    REPLAYLOOP(1)
+    CHANSHIFT(0)
+    d#3 $8
+  $legato
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_chorus_4
+  
+  g3 $4
+  a3 $8
+  REG3(0x96) a3 $8
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_chorus_5
+  
+  $sq25
+  
+  SETLOOP()
+    $lead_l  d#4 $32_1   $lead_q  d#4 $32_2
+  REPLAYLOOP(1)
+  e4 $16
+  
+  SETLOOP()
+    $lead_l  c4 $32_1   $lead_q  c4 $32_2
+  REPLAYLOOP(1)
+  c4 $16
+  
+  $lead_l
+  g4 $8
+  
+           d2 $32_1            r  $32_2
+           f2 $32_1   $lead_q  d2 $32_2
+  $lead_l  b2 $32_1   $lead_q  f2 $32_2
+  $lead_l  d3 $32_1   $lead_q  b2 $32_2
+  $lead_l  g3 $32_1   $lead_q  d3 $32_2
+  $lead_l  b3 $32_1   $lead_q  g3 $32_2
+  $lead_l  d4 $32_1   $lead_q  b3 $32_2
+  $lead_l  g4 $32_1   $lead_q  d4 $32_2
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_chorus_6
+  
+  a3 35
+  REG3(0x93) a3 $8
+  r $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_bridge_1
+  
+           d2 $16
+  ^back_bridge_1_entry2
+           g2 $32_1   $lead_q  d2 $32_2
+  $lead_l  g2 $32_1   $lead_q  g2 $32_2
+  $lead_l  d3 $16
+           d3 $32_1   $lead_q  d3 $32_2
+  $lead_l  g3 $32_1   $lead_q  d3 $32_2
+  $lead_l  g3 $16
+           d4 $32_1   $lead_q  g3 $32_2
+  
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_bridge_2
+  
+           d3 $16
+           d#3 $16
+           d3 $16
+  REG3(0x93) d3 $16
+  $sq50
+           d4 $16
+  REG3(0x93) d4 $16
+           d3 $6
+           
+           d3 $16
+           f3 $16
+           g3 $16
+           f3 $16
+           c3 $4
+           
+           c3 $16
+           d3 $16
+           c3 $16
+           a#2 $16
+           
+  //--------------------
+           
+           a#4 $16
+           d5 $16
+           f4 $16
+           d4 $16
+           
+           d5 $16
+  REG3(0x93) d5 $16
+           d4 $16
+           
+           d3 $32_1   $lead_q  d4 $32_2
+  SETLOOP()
+    $lead_l  d4 $32_1   $lead_q  e4 $32_2
+    $lead_l  e4 $32_1   $lead_q  d4 $32_2
+  REPLAYLOOP(2)
+  $lead_l  f#4 $32_1   $lead_q  e4 $32_2
+  $lead_l
+  
+  g4 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_bridge_3
+  
+  $sq25
+           g4 $16
+           a4 $16
+  $lead_q  g4 $16
+  $lead_l  a4 $16
+           d4 $16
+  $lead_q  a#4 $16
+  
+  $sq12
+  $lead_l  g4 $16
+           a4 $16
+           a#4 $16
+           d4 $16
+  $lead_q  a#4 $16
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_bridge_3_2
+  
+  $lead_l  d5 $32_1   $lead_q  d4 $32_2
+  
+  SETLOOP()
+    $lead_l  d5 $32_1   $lead_q  d5 $32_2
+    $lead_l  d5 $32_1   $lead_q  d5 $32_2
+    $sq25
+  REPLAYLOOP(1)
+  
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_bridge_4
+  
+           g5 $8
+  $lead_q  g5 $8
+  $lead_l  f5 $8
+  $lead_q  f5 $8
+  
+  $lead_l  d#5 $16
+           a4 $16
+  $lead_q  d#5 $16
+  $lead_l  f#4 $12
+  $lead_q  f#4 $8
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^back_bridge_4
+  
+           g5 $8
+  $lead_q  g5 $8
+  $lead_l  f5 $8
+  $lead_q  f5 $8
+  
+  $lead_l  d#5 $16
+           a4 $16
+  $lead_q  d#5 $16
+  $lead_l  f#4 $12
+  $lead_q  f#4 $8
+  $lead_l
+
+  RET()
+};
+
+_GENERIC = {
+
+  ^tri_overflow
+  
+  // new 0
+  
+  r 224
+  r 224
+  
+  // new 1
+  
+  CALL(^bass_newintro_1)
+  
+  // new 2
+  
+  SETLOOP()
+    CALL(^bass_main_1_1)
+    CALL(^bass_main_1_2)
+    CALL(^bass_main_2_1)
+    CALL(^bass_main_2_2)
+    CALL(^bass_main_4_1)
+    CALL(^bass_main_4_2)
+    CALL(^bass_main_2_1)
+    CHANSHIFT(3)
+    CALL(^bass_main_5)
+    CHANSHIFT(0)
+  REPLAYLOOP(1)
+  
+  // new 3
+  
+  // 0
+  
+/*  CALL(^bass_intro_1)
+  CHANSHIFT(12)
+  CALL(^lead_intro_2)
+  e4 $4
+  
+  $trkick_down
+  r $12
+  
+  SETLOOP()
+    $trkick_down
+    CALL(^lead_intro_2_entry2)
+  REPLAYLOOP(2)
+  
+  // 1
+  
+  CHANSHIFT(0)
+  
+  // Play crash at start of pattern
+  // I WONDER WHY THIS DOESN'T WORK
+//  $bass_intro2_1_firstentry
+  $crash $trkick_full
+  CALL(^bass_intro2_1_entry2)
+  
+  CALL(^bass_intro2_2)
+  
+  CHANSHIFT(3)
+  CALL(^bass_intro2_1)
+  CHANSHIFT(-2)
+  CALL(^bass_intro2_1)
+  
+  CHANSHIFT(0)
+  CALL(^bass_intro2_1)
+  CHANSHIFT(-4)
+  CALL(^bass_intro2_1)
+  CHANSHIFT(3)
+  CALL(^bass_intro2_1)
+  CHANSHIFT(-5)
+  CALL(^bass_intro2_3)
+  
+  CHANSHIFT(0) */
+  
+  // 2
+  
+  
+//  CALL(^bass_main_1_1)
+  $crash $trkick_full
+  CALL(^bass_main_1_1_entry_3)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_5_2)
+  
+  // insert
+  
+  SETLOOP()
+    $sn r $16
+  REPLAYLOOP(11)
+  $crash r $4
+  
+  // 3
+  
+  CALL(^bass_main_1_1)
+//  $crash $trkick_full
+//  CALL(^bass_main_1_1_entry_3)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_5)
+  
+  // 4
+  
+  CALL(^bass_main_1_1)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CHANSHIFT(1)
+  CALL(^bass_main_5)
+  CHANSHIFT(0)
+  
+  // 5
+  
+  CALL(^bass_main_1_1)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1_alt)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CHANSHIFT(3)
+  CALL(^bass_main_5)
+  CHANSHIFT(0)
+  
+  // 6
+  
+  CALL(^bass_main_1_1)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1_alt)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_6)
+  
+  // 7
+  
+  CALL(^bass_main_1_1)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_5)
+  
+  // 8
+  
+  CHANSHIFT(-2)
+  
+  CALL(^bass_main_1_1)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CHANSHIFT(-1)
+  CALL(^bass_main_5)
+  CHANSHIFT(-2)
+  
+  // 9_1
+  
+  CALL(^bass_main_1_1)
+  CHANSHIFT(0)
+  CALL(^bass_main_4_2)
+  CHANSHIFT(-12)
+  CALL(^bass_main_2_1)
+  CHANSHIFT(-5)
+  CALL(^bass_main_2_2)
+  
+  // 9_2
+  
+  CHANSHIFT(-2)
+  CALL(^bass_main_4_1)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_5_alt)
+  
+  // 10
+  
+  CHANSHIFT(0)
+  
+  CALL(^bass_bridge_1)
+  CALL(^bass_bridge_2)
+  CALL(^bass_bridge_3)
+  CALL(^bass_bridge_4)
+  CALL(^bass_bridge_1)
+  CHANSHIFT(-2)
+  CALL(^bass_bridge_2)
+  CHANSHIFT(2)
+  CALL(^bass_bridge_3)
+  CHANSHIFT(0)
+  CALL(^bass_bridge_4)
+  
+  // 11
+  
+  CALL(^bass_bridge_1)
+  CALL(^bass_bridge_2)
+  CALL(^bass_bridge_3)
+  CALL(^bass_bridge_4)
+  CHANSHIFT(-2)
+  CALL(^bass_bridge_2)
+  CHANSHIFT(2)
+  CALL(^bass_bridge_3)
+  
+  // 12
+  
+  CHANSHIFT(0)
+  $crash  $trkick_full
+
+  JUMP(^tri_reentry)
+};
+
+
+
+
+
+_GENERICADDR = $freespace_6;
+
+_GENERIC = {
+
+  ^sq2_overflow
+  
+  // new 0
+  
+  r 224
+  r 224
+  
+  // new 1
+  
+  $sq25
+  
+  r $16
+  CALL(^lead_newintro_1)
+  CALL(^lead_newintro_2)
+  CALL(^lead_newintro_1)
+  g3 $12
+  CALL(^lead_newintro_2_alt_entry2)
+  
+  // new 2
+  
+  SETLOOP()
+    CHANSHIFT(0)
+    CALL(^back_newintro_1)
+    CHANSHIFT(-4)
+    CALL(^back_newintro_1)
+    CHANSHIFT(3)
+    CALL(^back_newintro_1)
+    CHANSHIFT(-2)
+    CALL(^back_newintro_1)
+  REPLAYLOOP(1)
+  
+  // new 3
+  
+  CHANSHIFT(12)
+  CALL(^back_newintro_1)
+  CHANSHIFT(8)
+  CALL(^back_newintro_1)
+  CHANSHIFT(15)
+  CALL(^back_newintro_1)
+  CHANSHIFT(10)
+  CALL(^back_newintro_1)
+  
+  CHANSHIFT(12)
+  CALL(^back_newintro_1)
+  CHANSHIFT(8)
+  CALL(^back_newintro_1)
+  CHANSHIFT(15)
+  CALL(^back_newintro_1)
+  
+  CHANSHIFT(0)
+  b2 $8
+  REG3(0x9E) b2 $6
+  
+  // 0
+  
+/*  $lead_q
+  
+  r $4
+  CALL(^lead_intro_1)
+  
+  CALL(^lead_intro_2)
+  e4 $2
+  
+  $lead_m1
+  CALL(^lead_intro_2)
+  e4 $2
+  
+  $lead_l
+  CALL(^lead_intro_2)
+  
+  // 1
+  
+  a3 $8
+  
+  $sq25
+  
+  CALL(^lead_intro_3_entry2)
+  CALL(^lead_intro_4)
+  CHANSHIFT(3)
+  CALL(^lead_intro_3)
+  CHANSHIFT(0)
+  CALL(^lead_intro_5)
+  
+  CALL(^lead_intro_3)
+  CALL(^lead_intro_4)
+  
+  DECAY(0)
+  $lead_mid
+  e4 $16
+  REG3(0xBE) e4 49
+  b4 28
+  REG3(0x95) b4 28
+  $lead_l
+  DECAY($defaultdecay) */
+  
+  // 2
+  
+  r $8
+  $lead_q
+  
+  CALL(^lead_intro_6)
+  CALL(^lead_intro_7)
+  CHANSHIFT(7)
+  CALL(^lead_intro_7)
+  
+  CHANSHIFT(24)
+  CALL(^lead_intro_6)
+  CALL(^lead_intro_7)
+  CALL(^lead_intro_8)
+  
+  // insert
+  
+  g#3 112
+  
+  // 3
+  
+  CHANSHIFT(0)
+  $lead_l
+  $sq50
+  
+  $lead_staccato_16
+    CALL(^back_main_1)
+    CALL(^back_main_2)
+    CALL(^back_main_1)
+    CALL(^back_main_3)
+    
+  // 4
+    CHANSHIFT(12)
+    CALL(^back_main_1)
+    CALL(^back_main_2)
+    CALL(^back_main_1)
+    CALL(^back_main_4)
+    
+  $legato
+  
+  // 5
+  
+  CHANSHIFT(0)
+  CALL(^back_chorus_1)
+  CALL(^back_chorus_2)
+  CALL(^back_chorus_3)
+  CALL(^back_chorus_3_2)
+  CALL(^back_chorus_4)
+  
+  // 6
+  
+  CALL(^back_chorus_1)
+  CALL(^back_chorus_5)
+  CALL(^back_chorus_3)
+  CALL(^back_chorus_3_2)
+  CALL(^back_chorus_6)
+  
+  // 7
+  
+  $lead_l
+  
+  $lead_staccato_16
+    CALL(^back_main_1)
+    CALL(^back_main_2)
+    CHANSHIFT(12)
+    CALL(^back_main_1)
+    CALL(^back_main_3)
+    
+  // 8
+    CHANSHIFT(10)
+    CALL(^back_main_1)
+    CALL(^back_main_2)
+    CALL(^back_main_1)
+    CALL(^back_main_4)
+    
+  $legato
+  
+  JUMP(+sq2_reentry)
+};
+
+
+
+//_GENERICADDR = $freespace_3;
+
+_GENERIC = {
+
+  ^sq1_overflow
+  
+  // new 0
+  
+  SETLOOP()
+    CALL(^lead_newintro_1)
+    CALL(^lead_newintro_2)
+    CALL(^lead_newintro_1)
+    g3 $12
+    CALL(^lead_newintro_2_entry2)
+  REPLAYLOOP(1)
+  
+  // new 2
+  
+  CHANSHIFT(12)
+  CALL(^lead_newintro_1)
+  CALL(^lead_newintro_2)
+  CALL(^lead_newintro_1)
+  g3 $12
+  CALL(^lead_newintro_2_entry2)
+  
+  // new 3
+  
+  CHANSHIFT(24)
+    CALL(^lead_newintro_1)
+    CALL(^lead_newintro_2)
+    CALL(^lead_newintro_1)
+    g3 $4
+    g2 $4
+  CHANSHIFT(0)
+  e3 $8
+  REG3(0x9E) e3 $6
+  
+  // 0
+  
+/*  CALL(^lead_intro_1)
+  
+  $lead_mid
+  SETLOOP()
+    CALL(^lead_intro_2)
+    e4 $2
+  REPLAYLOOP(1)
+  
+  SETLOOP()
+    CALL(^lead_intro_2)
+  REPLAYLOOP(1)
+  
+  // 1
+  
+//  $sq25
+  
+  e4 $8
+  
+  CALL(^lead_intro_3_entry2)
+  CALL(^lead_intro_4)
+  CHANSHIFT(3)
+  CALL(^lead_intro_3)
+  CHANSHIFT(0)
+  CALL(^lead_intro_5)
+  
+  DECAY(0)
+  $lead_mid
+  a3 $16
+  REG3(0xBE) a3 49
+  e4 35
+  REG3(0x95) e4 21
+  
+  a4 $16
+  REG3(0xBE) a4 49
+  g#5 28
+  REG3(0x95) g#5 28
+  DECAY($defaultdecay)
+  $lead_l */
+  
+  // 2
+  
+  CALL(^lead_intro_6)
+  CALL(^lead_intro_7)
+  CHANSHIFT(7)
+  CALL(^lead_intro_7)
+  
+  CHANSHIFT(24)
+  CALL(^lead_intro_6)
+  CALL(^lead_intro_7)
+  CALL(^lead_intro_8)
+  $sq25 d3 $lead_intro_g_instrchng1
+//  DECAY(9)
+//  $sq50 d3 10
+  $sq50 d3 122
+  
+  // insert
+  
+  
+  
+  // 3
+  
+  DECAY($defaultdecay)
+  CHANSHIFT(0)
+  CALL(^lead_main_1)
+  CALL(^lead_main_2)
+  CALL(^lead_main_1)
+  CALL(^lead_main_3)
+  
+  // 4
+  
+  CHANSHIFT(12)
+  CALL(^lead_main_1)
+  CALL(^lead_main_2)
+  CALL(^lead_main_1)
+  CALL(^lead_main_4)
+  
+  // 5
+  
+  CHANSHIFT(0)
+  CALL(^lead_chorus_1)
+  CALL(^lead_chorus_2)
+  CALL(^lead_chorus_3)
+  CALL(^lead_chorus_3_2)
+  CALL(^lead_chorus_4)
+  
+  // 6
+  
+  CALL(^lead_chorus_1)
+  CALL(^lead_chorus_5)
+  CALL(^lead_chorus_3)
+  CALL(^lead_chorus_3_2)
+  CALL(^lead_chorus_6)
+  
+  // 7
+  
+  CHANSHIFT(12)
+  CALL(^lead_main_1)
+  CALL(^lead_main_2)
+  CHANSHIFT(0)
+  CALL(^lead_main_1)
+  CALL(^lead_main_3)
+  
+  // 8
+  
+  CHANSHIFT(10)
+  CALL(^lead_main_1)
+  CALL(^lead_main_2)
+  CALL(^lead_main_1)
+  CALL(^lead_main_4)
+  
+  // 9
+  
+  CHANSHIFT(0)
+  CALL(^lead_bridge_1)
+  
+  // 10
+  
+  CALL(^lead_bridge_2)
+  CALL(^lead_bridge_2_2)
+  CALL(^lead_bridge_3)
+  CHANSHIFT(-12)
+  CALL(^lead_bridge_2)
+  CHANSHIFT(-24)
+  CALL(^lead_bridge_2_2)
+  CHANSHIFT(-12)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-15)
+  CALL(^lead_bridge_4)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-18)
+  CALL(^lead_bridge_4)
+  
+  JUMP(+sq1_reentry)
+};
+
+//*******************************
+// "Physical" channel data
+//*******************************
+
+_SQ1 = { 
+  JUMP(^sq1_overflow)
+  
+  // 11
+  
+  CHANSHIFT(12)
+  CALL(^lead_bridge_2)
+  CALL(^lead_bridge_2_2)
+  CALL(^lead_bridge_3)
+  CHANSHIFT(-24)
+  CALL(^lead_bridge_2)
+  CHANSHIFT(-36)
+  CALL(^lead_bridge_2_2)
+  
+  // 12
+  
+  CHANSHIFT(-27)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-26)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-24)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-23)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-22)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-21)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-20)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-18)
+  CALL(^lead_bridge_4)
+  
+  // 13
+  
+  CHANSHIFT(7)
+  CALL(^lead_main_1)
+  CALL(^lead_main_2)
+  CHANSHIFT(-5)
+  CALL(^lead_main_1)
+  CALL(^lead_main_3)
+  
+  // 14
+  
+  CHANSHIFT(9)
+  CALL(^lead_main_1)
+  CALL(^lead_main_2)
+  CALL(^lead_main_1)
+  CALL(^lead_main_4)
+  
+  // 15
+  
+  CHANSHIFT(0)
+  CALL(^lead_chorus_1)
+  CALL(^lead_chorus_2)
+  CALL(^lead_chorus_3)
+  CALL(^lead_chorus_3_2)
+  CALL(^lead_chorus_4)
+  
+  // 16
+  
+  CALL(^lead_chorus_1)
+  CALL(^lead_chorus_5)
+  CALL(^lead_chorus_3)
+  CALL(^lead_chorus_3_2)
+  CALL(^lead_chorus_6)
+  
+  // new end 0
+  
+  $sq50
+  
+  CHANSHIFT(12)
+  SETLOOP()
+    CALL(^lead_newintro_1)
+    CALL(^lead_newintro_2)
+    CALL(^lead_newintro_1)
+    g3 $12
+    CALL(^lead_newintro_2_entry2)
+    CHANSHIFT(24)
+  REPLAYLOOP(2)
+  
+  // new end 1
+  
+  CALL(^lead_newintro_1)
+  CALL(^lead_newintro_2)
+  CALL(^lead_newintro_1)
+  
+  // new end 2
+  
+  g#2 96
+  a#2 96
+  g2 192
+  r 12
+  
+/*  CHANSHIFT(24)
+    CALL(^lead_newintro_1)
+    CALL(^lead_newintro_2)
+    CALL(^lead_newintro_1)
+    g3 $4
+    g2 $4
+  CHANSHIFT(0)
+  e3 $8
+  REG3(0x9E) e3 $6 */
+  
+/*  CHANSHIFT(0)
+  CALL(^lead_chorus_1)
+  CALL(^lead_chorus_2)
+  CALL(^lead_chorus_3)
+  CALL(^lead_chorus_3_2)
+  CALL(^lead_chorus_4)
+  
+  // 16
+  
+  CALL(^lead_chorus_1)
+  CALL(^lead_chorus_5)
+  CALL(^lead_chorus_3)
+  CALL(^lead_chorus_3_2)
+  CALL(^lead_chorus_4)
+  CALL(^lead_chorus_3)
+  CALL(^lead_chorus_3_2)
+  CALL(^lead_chorus_4)
+  
+  // 17
+  
+  CALL(^lead_chorus_3)
+  CALL(^lead_chorus_7) */
+  
+  
+};
+
+_SQ2 = {
+  JUMP(^sq2_overflow)
+  
+  // 9
+  
+  $sq25
+  CHANSHIFT(0)
+  CALL(^back_bridge_1)
+  CHANSHIFT(-2)
+  CALL(^back_bridge_1)
+  CHANSHIFT(-7)
+  d2 $16
+  CALL(^back_bridge_1_entry2)
+  CHANSHIFT(0)
+  CALL(^back_bridge_2)
+  
+  // 10
+  
+  CALL(^back_bridge_3)
+  CALL(^back_bridge_3_2)
+  CALL(^back_bridge_4)
+  CHANSHIFT(-12)
+  CALL(^back_bridge_3)
+  CHANSHIFT(-24)
+  CALL(^back_bridge_3_2)
+  CHANSHIFT(-19)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-22)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-18)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-22)
+  CALL(^lead_bridge_4)
+  
+  // 11
+  
+  CHANSHIFT(12)
+  CALL(^back_bridge_3)
+  CALL(^back_bridge_3_2)
+  CALL(^back_bridge_4)
+  CHANSHIFT(-24)
+  CALL(^back_bridge_3)
+  CHANSHIFT(-36)
+  CALL(^back_bridge_3_2)
+  
+  // 12
+  
+  CHANSHIFT(-34)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-33)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-31)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-30)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-29)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-28)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-27)
+  CALL(^lead_bridge_4)
+  CHANSHIFT(-25)
+  CALL(^lead_bridge_4)
+  
+  // 13
+  
+  CHANSHIFT(-5)
+  $lead_l
+  $sq50
+  
+  $lead_staccato_16
+    CALL(^back_main_1)
+    CALL(^back_main_2)
+    CHANSHIFT(7)
+    CALL(^back_main_1)
+    CALL(^back_main_3)
+    
+  // 14
+    CHANSHIFT(9)
+    CALL(^back_main_1)
+    CALL(^back_main_2)
+    CALL(^back_main_1)
+    CALL(^back_main_4)
+    
+  $legato
+  
+  // 15
+  
+  CHANSHIFT(0)
+  CALL(^back_chorus_1)
+  CALL(^back_chorus_2)
+  CALL(^back_chorus_3)
+  CALL(^back_chorus_3_2)
+  CALL(^back_chorus_4)
+  
+  // 16
+  
+  CALL(^back_chorus_1)
+  CALL(^back_chorus_5)
+  CALL(^back_chorus_3)
+  CALL(^back_chorus_3_2)
+  CALL(^back_chorus_6)
+  
+  // new end 0
+  
+  $sq25
+  
+  SETLOOP()
+    CHANSHIFT(0)
+    CALL(^back_newintro_1)
+    CHANSHIFT(-4)
+    CALL(^back_newintro_1)
+    CHANSHIFT(3)
+    CALL(^back_newintro_1)
+    CHANSHIFT(-2)
+    CALL(^back_newintro_1)
+  REPLAYLOOP(1)
+  
+  // new end 1
+  
+  SETLOOP()
+    CHANSHIFT(12)
+    CALL(^back_newintro_1)
+    CHANSHIFT(8)
+    CALL(^back_newintro_1)
+    CHANSHIFT(15)
+    CALL(^back_newintro_1)
+    CHANSHIFT(10)
+    CALL(^back_newintro_1)
+  REPLAYLOOP(4)
+  
+  CHANSHIFT(12)
+  CALL(^back_newintro_1)
+  CHANSHIFT(8)
+  CALL(^back_newintro_1)
+  CHANSHIFT(0)
+  
+  // new end 2
+  
+  d#4 96
+  f4 96
+  e4 192
+  r 12
+  
+  // end
+  
+  r $1
+  r $1
+  
+/*  CHANSHIFT(0)
+  CALL(^back_chorus_1)
+  CALL(^back_chorus_2)
+  CALL(^back_chorus_3)
+  CALL(^back_chorus_3_2)
+  CALL(^back_chorus_4)
+  
+  // 16
+  
+  CALL(^back_chorus_1)
+  CALL(^back_chorus_5)
+  CALL(^back_chorus_3)
+  CALL(^back_chorus_3_2)
+  CALL(^back_chorus_4)
+  CALL(^back_chorus_3)
+  CALL(^back_chorus_3_2)
+  CALL(^back_chorus_4)
+  
+  // 17
+  
+  CALL(^back_chorus_3)
+  r $16
+  $lead_q
+  CALL(^lead_chorus_7) */
+  
+};
+
+_TRI = {
+  
+  JUMP(^tri_overflow)
+  
+  CALL(^bass_bridge_5_entry2)
+  CHANSHIFT(1)
+  CALL(^bass_bridge_5)
+  CHANSHIFT(3)
+  CALL(^bass_bridge_5)
+  CHANSHIFT(4)
+  CALL(^bass_bridge_5)
+  
+  CHANSHIFT(5)
+  CALL(^bass_bridge_6)
+  CHANSHIFT(6)
+  CALL(^bass_bridge_6)
+  CHANSHIFT(7)
+  CALL(^bass_bridge_6_2)
+  CHANSHIFT(9)
+  CALL(^bass_bridge_7)
+  
+  // 13
+  
+  CHANSHIFT(-5)
+  SETLOOP()
+    CALL(^bass_main_1_1)
+    CALL(^bass_main_1_2)
+    CALL(^bass_main_2_1)
+    CALL(^bass_main_2_2)
+    CALL(^bass_main_4_1)
+    CALL(^bass_main_4_2)
+    CALL(^bass_main_2_1)
+    CALL(^bass_main_5)
+    CHANSHIFT(-3)
+  REPLAYLOOP(1)
+  
+  // 15
+  
+  CHANSHIFT(0)
+  CALL(^bass_main_1_1)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1_alt)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CHANSHIFT(3)
+  CALL(^bass_main_5)
+  CHANSHIFT(0)
+  
+  // 16
+  
+  CALL(^bass_main_1_1)
+  CALL(^bass_main_1_2)
+  CALL(^bass_main_2_1)
+  CALL(^bass_main_2_2)
+  CALL(^bass_main_4_1_alt)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+//  CALL(^bass_main_6)
+  CALL(^bass_main_6_alt)
+  
+  // new end 0
+  
+  SETLOOP()
+    CALL(^bass_main_1_1)
+    CALL(^bass_main_1_2)
+    CALL(^bass_main_2_1)
+    CALL(^bass_main_2_2)
+    CALL(^bass_main_4_1)
+    CALL(^bass_main_4_2)
+    CALL(^bass_main_2_1)
+    CHANSHIFT(3)
+    CALL(^bass_main_5)
+    CHANSHIFT(0)
+  REPLAYLOOP(1)
+  
+  // new end 1
+  
+  $crash $trkick_full
+  r 217
+  SETLOOP()
+    r 112
+  REPLAYLOOP(4)
+  
+  // new end 2
+  
+  g#2 96
+  a#2 96
+//  c3 96
+  c3 224
+  r 12
+  
+  
+/*  SETLOOP()
+    CHANSHIFT(0)
+    CALL(^bass_main_1_1)
+    CALL(^bass_main_1_2)
+    CALL(^bass_main_2_1)
+    CALL(^bass_main_2_2)
+    CALL(^bass_main_4_1_alt)
+    CALL(^bass_main_4_2)
+    CALL(^bass_main_2_1)
+    CHANSHIFT(3)
+    CALL(^bass_main_5)
+  REPLAYLOOP(1)
+  
+  // 17
+  
+  CHANSHIFT(0)
+  CALL(^bass_main_4_1_alt)
+  CALL(^bass_main_4_2)
+  CALL(^bass_main_2_1)
+  CHANSHIFT(3)
+  CALL(^bass_main_5)
+  CHANSHIFT(0)
+  CALL(^bass_main_4_1_alt)
+  CALL(^bass_main_4_2)
+  CALL(^bass_end)
+  
+  r 12 */
+};
+
+

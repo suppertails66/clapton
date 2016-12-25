@@ -1,0 +1,555 @@
+// Boss (level 0, BANK 3)
+
+// Free space defines
+// Portion of interrupt handler that isn't used during regular gameplay
+// 36309 / 0x11C / 284
+$freespace_1 = "0xC636";
+// iris/keycard 0x9349 (0x39 / 57)
+// this can't be used on level 5
+$freespace_keycard = "0xD349";
+
+// Overwrite the real channels at their original locations so we
+// shared with tri!
+_SQ1ADDR = 0xCAB9;
+// absolutely fucking nothing!
+_SQ2ADDR = 0xCAFE;
+// shared with sq1!
+_TRIADDR = 0xCACE;
+
+$defaultdecay = "10";
+
+// Note duration macros. 32nd = 3 ticks, 16th = 6, etc.
+/*$32 = "3";
+$16 = "6";
+$8  = "12";
+$4  = "24";
+$2  = "48";
+$1  = "96";
+$24 = "9";
+$12 = "18";
+$6 = "36";
+$3 = "72"; */
+$32_1 = "4";
+$32_2 = "3";
+$16 = "7";
+$8  = "14";
+$4  = "28";
+$2  = "56";
+$1  = "112";
+// WRONG
+//$24 = "10";
+$12 = "21";
+$6 = "42";
+$3 = "84";
+
+
+	 
+
+//*******************************
+// Square defines
+//*******************************
+// Pulse width register macros
+$sq12 = "REG1(0x3F)";
+$sq25 = "REG1(0x7F)";
+$sq50 = "REG1(0xBF)";
+$sq75 = "REG1(0xFF)";
+
+// Definition of regular/delay volume
+//$lead_l = "CHANVOL(0x0C)";
+$lead_l = "CHANVOL(0x0E)";
+$lead_mid = "CHANVOL(0x08)";
+//$lead_q = "CHANVOL(0x06)";
+$lead_q = "CHANVOL(0x07)";
+$lead_m1 = "CHANVOL(0x08)";
+$lead_m2 = "CHANVOL(0x0A)";
+$back_l = "CHANVOL(0x08)";
+$back_q = "CHANVOL(0x04)";
+
+$sq_q = "CHANVOL(0x05)";
+$sq_l = "CHANVOL(0x0A)";
+$sq_q2 = "CHANVOL(0x06)";
+$sq_l2 = "CHANVOL(0x0C)";
+$sq_q3 = "CHANVOL(0x08)";
+$sq_l3 = "CHANVOL(0x0C)";
+
+$legato = "REG2(0x08)";
+$intro_staccato = "REG2(0x38)";
+$lead_staccato = "REG2(0x48)";
+$lead_staccato_16 = "REG2(0x78)";
+$back_staccato = "REG2(0x38)";
+
+//*******************************
+// Triangle defines
+//*******************************
+//$trkick = "f3 1 eb3 1 c3 1 a2 1 f#2 1 d2 1";
+//$trkick = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+//$trkick = "c3 2 f#2 2 c1 2";
+//$trkick_full = "c3 1 a2 1 f#2 1 d#2 1 c1 1 a1 1";
+$trkick_full = "g3 1 e3 1 c#3 1 a#2 1 g2 1 e2 2";
+$trkick_upper = "g3 1 e3 1 c#3 1";
+$trkick_lower = "a#2 1 g2 1 e2 2";
+//$trkick = "c3 2 f2 2 a1 3";
+$trkick = "c3 1 a#2 1 g2 1 d2 1 b1 1 a1 2";
+//$revtrkick = "a1 1 b1 1 d2 1 g2 1 a#2 1 c3 1";
+$revtrkick = "a1 2 g2 2 c3 3";
+//$tomhi = "c4 1 a#3 1 g3 1 d3 1 b2 1 a2 1";
+$tomhi = "c4 2 e3 2 a2 3";
+//$tommid = "f#3 1 e3 1 c#3 1 a#2 1 g#2 1 f2 1";
+//$tommid = "f#3 1 e3 1 c#3 1 a#2 1 g#2 1 f2 1";
+$tommid = "f#3 2 b2 2 f2 3";
+//$trkick = "c3 2 f2 2 a1 2";
+//$trkick_down = "c2 2 f#1 2 c#0 3";
+$trkick_down = "g2 1 e2 1 c#2 1 a#1 1 g1 1 e1 2";
+$trrevsn = "g#1 1 b1 1 e2 1 f#2 1 a2 1 b2 1 d3 1 e3 1 g3 1 a3 1 c4 1 d4 1";
+
+//*******************************
+// Noise defines
+//*******************************
+$kick = "NOISE(0x81, 0x8F)";
+//$sn = "NOISE(0x81, 0x06)";
+//$sn = "REG2(0x78) NOISE(0x96, 0x06)";
+//$sn = "REG2(0x68) NOISE(0x94, 0x09)";
+$sn = "REG2(0x68) NOISE(0x97, 0x08)";
+$ch = "NOISE(0x81, 0x01)";
+//$oh = "NOISE(0x85, 0x01)";
+//$oh = "NOISE(0xA5, 0x01)";
+$oh = "NOISE(0xA7, 0x01)";
+$crash = "REG2(0x30) NOISE(0x8C, 0x01)";
+$hiss = "NOISE(0x92, 0x08)";
+
+
+
+//*******************************
+// Misc defines
+//*******************************
+// Sweep
+$sweepoff = "REG3(0x00)";
+$introsweep = "REG3(0x93)";
+
+//$meldecay = "DECAY(2)";
+//$backdecay = "DECAY(1)";
+$meldecay = "REG2(0x08)";
+$backdecay = "REG2(0x38)";
+$melstaccato = "REG2(0x38)";
+$mellegato = "REG2(0x08)";
+
+//*******************************
+// Song init
+//*******************************
+// Song init. This only needs to happen on one channel,
+// and only for cave music (because it plays first no matter what).
+_SQ1 = { DRIVERDELAY(0x00) TEMPO(1) MASTSHIFT(0) };
+//_SQ1 = { TEMPO(1) };
+// Channel init
+/*_SQ1 = { CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay) $lead_l
+	 $sq50 REG2(0x08) };
+_SQ2 = { CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay) $lead_l
+	 $sq50 REG2(0x08) };
+_TRI = { CHANSHIFT(0) EFFECTS(0)
+	 REG1(0xFF) REG2(0x08) }; */
+
+// "Declarations" of jump points for each channel.
+// This is an esoteric workaround for the fact that the compiler is
+// one-pass, making it normally impossible (e.g.) to jump from an earlier
+// position to one defined later. By using "+" instead of "^" when
+// defining a label, the position will be offset by 3. Assuming the
+// label is immediately followed by a JUMP() command, the label
+// then references the data following the jump. The data for the three
+// "real" channels will be placed on the "generic" channel in the middle
+// of the file. To save space, we need to put some data in those
+// channels, so the data at the end of the track goes there.
+//
+// Ultimately, this is a hacky and entirely too complicated way of getting
+// tracks to loop to an arbitrary point.
+_SQ1 = { +sq1_reentry };
+_SQ2 = { +sq2_reentry };
+_TRI = { +tri_reentry };
+
+//*******************************
+// "Generic" data
+//*******************************
+
+_GENERICADDR = $freespace_1;
+
+
+
+/*_GENERIC = {
+
+  ^bass_main_1
+  
+  $kick   $trkick
+          c2 $16
+  $sn     c2 $16
+  $ch     c2 $32_1 r $32_2
+  
+  $kick   c#2 $16
+  $ch     c#2 $16
+  $sn     c#2 $16
+          f#2 $16
+  
+  $kick   f#2 $16
+          c#2 $16
+  $ch     c#2 $16
+  $sn     f#2 $16
+  
+          c#2 $16
+  $ch     $trkick
+  $kick   c2 $16
+  $sn     c2 $8
+  $ch     c2 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_2
+  
+  $kick   $revtrkick
+          c3 $32_1 r $32_2
+  
+  $kick   c2 $16
+  $sn     c2 $16
+  $ch     f#2 $16
+  $kick   f#2 $16
+  
+          c#2 $16
+  $kick   c#2 $16
+  $sn     f#2 $16
+          f#2 $16
+  
+  $kick   c#2 $16
+  $sn     $trkick
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_3
+  
+  $kick   c2 $16
+          c3 $32_1 r $32_2
+  
+  $kick   c2 $16
+          $trkick
+  $kick   c#2 $16
+  $sn     c#2 $16
+  
+  $kick   $tomhi
+          d#2 $16
+  $kick   r $16
+  
+  $sn     $tommid
+          d#2 $16
+  $kick   $trkick
+  $sn     c2 $16
+  
+  RET()
+}; */
+
+/*_GENERIC = {
+
+  ^lead_main_1
+  
+  $legato
+  $lead_l $crash c2 $8
+  $lead_q c2 $16
+//  $lead_l $sn c3 $32_1 r $32_2
+  $lead_l $sn c3 $16
+  
+          $kick c2 $16
+          c#2 $16
+          $sn c#2 $16
+          f#2 $16
+          
+  $lead_q $kick c#2 $16
+  $lead_l c#2 $16
+  $lead_q $ch f#2 $16
+  $lead_l $sn f#2 $16
+  
+  $lead_q c#2 $16
+  $lead_l $ch c#2 $16
+  $lead_q f#2 $16
+//  $lead_l $kick c2 $8
+  $legato
+  $lead_l c2 $8
+          $ch c2 $16
+  
+  REG3(0x9C) $kick a2 $16
+//          $sn c3 $32_1 r $32_2
+          $sn c3 $16
+          
+          c2 $16
+          $ch c#2 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_2
+  
+          $sn f#2 $16
+  $lead_q c2 $16
+  
+  $lead_l $kick c#2 $16
+  $lead_q f#2 $16
+  $lead_l $sn c3 $16
+  $lead_q c#2 $16
+  
+  $lead_l $kick c#2 $16
+  $lead_q c3 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_3
+  
+          $sn c#2 $16
+  $lead_q c2 $16
+  $lead_l $sn d#2 $16
+  $lead_q c#2 $16
+  
+  $lead_l $kick d#2 $16
+  $lead_q d#2 $16
+  $lead_l $sn c#2 $16
+  $lead_q d#2 $16
+  
+  RET()
+}; */
+
+/*_GENERIC = {
+
+  ^lead_main_1
+  
+  $lead_l c2 $8
+  $lead_q c2 $16
+  $lead_l c3 $32_1 r $32_2
+  
+          c2 $16
+          c#2 $8
+          f#2 $16
+          
+  $lead_q c#2 $16
+  $lead_l c#2 $16
+  $lead_q f#2 $16
+  $lead_l f#2 $16
+  
+  $lead_q c#2 $16
+  $lead_l c#2 $16
+  $lead_q f#2 $16
+  $lead_l c2 $12
+  
+  REG3(0x9C) a2 $16
+          c3 $32_1 r $32_2
+          
+          c2 $16
+          c#2 $16
+  
+  RET()
+}; */
+
+_GENERIC = {
+
+  ^lead_main_1
+  
+  $lead_l c2 $12
+  $lead_l c3 $32_1 r $32_2
+  
+          c2 $16
+          c#2 $8
+          f#2 $16
+          
+  $lead_q c#2 $16
+  $lead_l c#2 $16
+//  $lead_q f#2 $16
+//  $lead_l f#2 $16
+          r   $16
+          f#2 $16
+  
+  $lead_q c#2 $16
+  $lead_l c#2 $16
+  $lead_q f#2 $16
+  $lead_l c2 $12
+  
+  REG3(0x9C) a2 $16
+          c3 $32_1 r $32_2
+          
+          c2 $16
+          c#2 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_2
+  
+          f#2 $16
+  $lead_q c2 $16
+  
+  $lead_l c#2 $16
+  $lead_q f#2 $16
+  $lead_l c3 $16
+  $lead_q c#2 $16
+  
+  $lead_l c#2 $16
+  $lead_q c3 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^lead_main_3
+  
+          c#2 $16
+  $lead_q c2 $16
+  $lead_l d#2 $16
+  $lead_q c#2 $16
+  
+  $lead_l d#2 $16
+//  $lead_q d#2 $16
+//  $lead_l c#2 $16
+          r   $16
+          c#2 $16
+  $lead_q d#2 $16
+  
+  RET()
+};
+
+_GENERIC = {
+
+  ^bass_main_1
+  
+/*  SETLOOP()
+    $kick $trkick
+          c2 $16
+    $sn   c2 $8
+  REPLAYLOOP(1)
+  
+  $kick $trkick
+        c2 $16
+  $sn   c2 $16
+  $kick c2 $8
+  
+  $ch   c2 $8 */
+  
+//  SETLOOP()
+    $kick c2 $8
+    $sn   c2 $8
+    $kick c2 $8
+    $sn   c2 $8
+//  REPLAYLOOP(1)
+  
+  $kick c2 $8
+  $sn   c2 $16
+  $kick c2 $8
+  
+  $ch   c2 $8
+  
+  RET()
+};
+
+_GENERIC = { ^sq1_overflow
+   CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay)
+	 $sq75 REG2(0x08) };
+
+_GENERIC = {
+
+  ^sq1_loop
+
+  SETLOOP()
+    CALL(^lead_main_1)
+    CALL(^lead_main_2)
+    CALL(^lead_main_1)
+    CALL(^lead_main_3)
+  REPLAYLOOP(1)
+
+  CHANSHIFT(5)
+    CALL(^lead_main_1)
+    CALL(^lead_main_2)
+    CALL(^lead_main_1)
+    CALL(^lead_main_3)
+  CHANSHIFT(0)
+  
+  JUMP(^sq1_loop)
+//  c0 0
+  
+//  JUMP(+sq1_reentry)
+};
+
+_GENERIC = { ^sq2_overflow
+   CHANSHIFT(0) EFFECTS(0) DECAY($defaultdecay)
+	 $sq25 REG2(0x08) };
+
+_GENERIC = {
+
+  r $16
+  JUMP(^sq1_loop)
+  
+  
+//  c0 0
+  
+//  JUMP(+sq2_reentry)
+};
+
+// no room for init at original location due to shared channels,
+// so it goes here
+
+_GENERIC = {
+
+  ^tri_overflow
+
+  ^tri_loop
+
+  CHANSHIFT(0)
+  SETLOOP()
+    CALL(^bass_main_1)
+  REPLAYLOOP(7)
+  
+  CHANSHIFT(5)
+  SETLOOP()
+    CALL(^bass_main_1)
+  REPLAYLOOP(3)
+
+  JUMP(^tri_loop)
+
+//  JUMP(^sq1_loop)
+
+//  JUMP(^tri_reentry)
+};
+
+//*******************************
+// "Physical" channel data
+//*******************************
+
+_SQ1 = { 
+  JUMP(^sq1_overflow)
+  
+  
+
+};
+
+_SQ2 = {
+//  r 12
+//  c0 0
+  JUMP(^sq2_overflow)
+  
+};
+
+_TRI = { 
+   EFFECTS(0)
+	 REG1(0x7F) REG2(0x08) REG3(0x41) };
+
+_TRI = {
+  JUMP(^tri_overflow)
+  
+  
+
+};
+
+
