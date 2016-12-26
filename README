@@ -4,7 +4,11 @@ This is a sound scripting system targeted at the sound driver for the NES/Famico
 
 It supports all the opcodes provided by the original driver, and also supports (but does not provide the functionality for) an extension that replaces two dummy opcodes with a simple call/return mechanism.
 
-Usage:
+===Build Instructions===
+
+Run the makefile. If you're on Windows, you can probably work something out.
+
+===Usage===
 
 clapton file.txt dst
 
@@ -13,3 +17,203 @@ This writes all defined sound data to individual files, located in the directory
 clapton file.txt inrom.nes outrom.nes
 
 This patches all defined sound data to inrom.nes, saving the result as outrom.nes. If the original ROM has an iNES header, it is removed before patching, and an appropriate iNES header is always added to the output.
+
+===Script Syntax Reference===
+
+See the text files in the "examples" folder for sample scripts.
+
+The general goal of a script is to assign some sound data to each of the three physical sound channels (pulse 1, pulse 2, and triangle). To do so, we must:
+
+1. Set the starting location of each of those channels, so Clapton knows where to write the sound data. This is done by assigning to the special built-in variables _SQ1ADDR, _SQ2ADDR, and _TRIADDR. For example:
+
+  _SQ1ADDR = 0x89AB
+  
+will set the target location for the first pulse channel to 0x89AB.
+
+2. Write some sound data to each of those channels. This is done by assigning to the special built-in variables _SQ1, _SQ2, and _TRI. Sound data is enclosed by curly braces and terminated by a semicolon. For example:
+
+  _SQ1 = { c3 6 e3 6 g3 6 };
+  
+will write to pulse channel 1 the three-note sequence "C3 E3 G3", with each note played for 6 ticks.
+
+Clapton additionally provides an extra channel for writing data that does not directly correspond to a physical channel. Its address variable is _GENERICADDR, and its write variable is _GENERIC.
+
+Note that it is possible to generate all the sound data simply by writing to one of the channels, changing its address, and then writing more data as necessary -- the channel written to has no effect on the actual data. Providing four logical channels simply makes the organization of the script file easier.
+
+Sound data consists of a series of zero or more notes, interspersed with zero or more function opcodes, terminated by a 00 (which Clapton automatically appends). Sound playback works as follows: Each of the three channels (pulse 1, pulse 2, and triangle) begins playback from a defined point in the ROM. Each channel plays until it reaches the terminator 00, at which point it stops and waits until all other channels have also reached a terminator. When all channels have stopped -- if this ever occurs -- the sound will either end (if being played as a sound effect) or restart from the beginning (if a music track). Note that if one channel finishes earlier than the others, the registers are not cleared before the channel is halted, so the last note will "stick" temporarily if it is not a rest.
+
+A note consists of pairs of the simple format:
+  pitch length
+Pitch is given in note-octave format, or "r" for a rest note. Length is a number of driver ticks; generally, this is the number of frames to hold the note times the driver tempo -- see TEMPO() below. For example:
+  a3 6
+  r 3
+  c4 255
+Note and length are each stored as a byte; thus, the longest possible length is 256 (indicated by the value 0).
+
+The highest legal note is f#10, with internal value 7E. Value 7F indicates a rest, while higher values are interpreted as function opcodes. Additionally, note C0 should not be used because its internal value is 00, causing it to be interpreted as the sound data terminator. (Notes lower than A1 cannot be produced by the NES hardware).
+
+A typical sound data ssignment might look like this:
+
+_SQ1 = {
+  SETLOOP()
+    a4 6
+    c5 6
+    e5 6
+    CHANSHIFT(12)
+  REPLAYLOOP(3)
+};
+
+Certain functions -- JUMP(), and in the enhanced driver, CALL() -- take an address as an argument. Clapton provides labels as a way to generate these addresses automatically. A label can be generated anywhere in a sequence of sound data by placing a carat followed by a label name (e.g. "^label"). This label can then be referred to by that name, including the carat, in function calls:
+
+_SQ1 = { a4 6 ^label c5 6 e5 6 JUMP(^label) }
+
+A label may also begin with a plus instead of a carat (e.g. "+label"). If this is the case, the generated address will not be at the given point but exactly three bytes after it instead. This provides a crude method of using a JUMP() command to play data from elsewhere, then have that data include a JUMP() back to just after the original JUMP(). This is a rather complex operation that defies simple explanation, so please see the examples in the "examples" folder for detailed use.
+
+Finally, Clapton provides a simple macro system for convenience. Macros use the following format:
+  $macroname = "text sequence inserted when macro is used";
+Do not embed one macro within another, as in "$macro = "a4 10 $someothermacro a5 10". Clapton doesn't support it.
+Macros are helpful for aliasing common operations, such as creating simple names for setting pulse duty cycles:
+  $sq12 = "REG1(0x3F)";
+  $sq25 = "REG1(0x7F)";
+  $sq50 = "REG1(0xBF)";
+  $sq75 = "REG1(0xFF)";
+
+===Sound Command Reference===
+
+Due to the way the driver works, all opcode sequences must be at least two bytes long. Opcodes with no parameters are padded with a dummy byte.
+
+Opcodes 8A, 8B, 8D, and 95 are dummy operations in the original driver. Clapton supports a driver extension that repurposes opcodes 8A and 8B to create a call/return mechanism, as described below.
+
+DELAY()
+  * Opcode: 80
+  * Length: 2
+  * Parameters: None
+  * Functionality: Not sure -- appears to be used as a shortcut to make one pulse channel play the same note as the other on a short delay? This doesn't "stick" for more than one note, so it doesn't seem very useful for saving space.
+  
+CHANVOL(volume)
+  * Opcode: 81
+  * Length: 2
+  * Parameters: [1] New channel volume (00-0F)
+  * Functionality: Sets the channel volume. Only applies to pulse channels.
+
+NOISE(byte400C, byte400E)
+  * Opcode: 82
+  * Length: 3
+  * Parameters: [1] Byte to write to register $400C
+                [2] Byte to write to register $400E
+  * Functionality: Writes to the noise registers.
+
+SETLOOP()
+  * Opcode: 83
+  * Length: 2
+  * Parameters: None
+  * Functionality: Sets the stating point of the loop for the REPLAYLOOP() command.
+
+REPLAYLOOP(numloops)
+  * Opcode: 84
+  * Length: 2
+  * Parameters: [1] Number of times to replay the loop
+  * Functionality: Replays the sound data starting from the position of the last call to SETLOOP() until this position is reached. This loop will be replayed (numloops) times in total. Note that the data following the initial SETLOOP() is played once normally, then repeated (numloops) times -- thus the command REPLAYLOOP(1) will play the looped section twice in total.
+  
+TEMPO(tempo)
+  * Opcode: 85
+  * Length: 2
+  * Parameters: [1] New driver tempo
+  * Functionality: Changes the driver's base tempo. This is a simple frame delay between driver updates: TEMPO(1) updates every frame, TEMPO(2) updates every other frame, etc.. Note that this affects all sounds played by the driver, not just music!
+
+DRIVERDELAY(subop1)
+  * Opcode: 86
+  * Length: 2
+  * Parameters: [1] Unknown
+  * Functionality: Unknown -- appears to relate to the initialization of the driver? This should be called with a parameter of 00 at the start of every music track, or the driver may temporarily hang.
+
+CHANSHIFT(semitones)
+  * Opcode: 87
+  * Length: 2
+  * Parameters: [1] Channel shift in semitones
+  * Functionality: Shifts every note played on the given channel up or down by the given number of semitones.
+  
+MASTSHIFT(semitones)
+  * Opcode: 88
+  * Length: 2
+  * Parameters: [1] Driver shift in semitones
+  * Functionality: Shifts every note played by the driver (music and sound effects, on all channels) up or down by the given number of semitones.
+  
+EFFECTS(subop1)
+  * Opcode: 89
+  * Length: 2
+  * Parameters: [1] Effects bitfield
+  * Functionality: A bitfield that triggers various effects on the channel. The following options are known, but more may exist:
+      * Bit 3: If set, note decay is disabled?
+      * Bit 6: If set, a burst of noise is played every time a note is triggered on the channel. The exact type played seems to be determined by the most recent writes via NOISE(), but it isn't clear exactly how this works.
+      * Bit 7: If set on a pulse channel, the sweep registers will not cleared after playing a note, allowing a repeated sequence of swept notes.
+      
+DECAY(speed)
+  * Opcode: 8C
+  * Length: 2
+  * Parameters: [1] Decay speed
+  * Functionality: On pulse channels, sets the volume envelope to a length corresponding to the given speed value. A parameter of 00 means decay is disabled; otherwise, higher values yield a longer decay time.
+  
+DRIVERSLOWDOWN(speed)
+  * Opcode: 8E
+  * Length: 2
+  * Parameters: [1] Driver slowdown?
+  * Functionality: Identical to TEMPO()?
+  
+OP8F(subop1)
+  * Opcode: 8F
+  * Length: 2
+  * Parameters: [1] Unknown
+  * Functionality: Unknown. The parameter byte is written to byte 0x16 of the current channel, but has no obvious effect on playback.
+
+JUMP(destination)
+  * Opcode: 90
+  * Length: 3
+  * Parameters: [1] Jump destination (16-bit address/label)
+  * Functionality: Immediately changes the location from which the channel reads sound data to the given address. Data will continue to be read from the new address after the jump.
+  
+REG1(subop1)
+  * Opcode: 91
+  * Length: 2
+  * Parameters: [1] Value sent to $4000 (pulse 1), $4004 (pulse 2), or $4008 (triangle)
+  * Functionality: Sets a register -- the exact register depends on the physical channel, as described above.
+  
+REG2(subop1)
+  * Opcode: 92
+  * Length: 2
+  * Parameters: [1] Value sent to $4003 (pulse 1), $4007 (pulse 2), or $400B (triangle)
+  * Functionality: Sets a register -- the exact register depends on the physical channel, as described above.
+  
+REG3(subop1)
+  * Opcode: 93
+  * Length: 2
+  * Parameters: [1] Value sent to $4001 (pulse 1), $4005 (pulse 2), or null (triangle)
+  * Functionality: Sets a register -- the exact register depends on the physical channel, as described above. For the triangle channel, this does nothing.
+  
+LENGTHEFFECT(subop1)
+  * Opcode: 94
+  * Length: 2
+  * Parameters: [1] Length effect bitfield?
+  * Functionality: Overrides channel decay and halt settings? 80 seems to yield staccato, 7F yields full legato, while values less than 10 affect volume?
+  
+*** The following opcodes are 2-byte dummy ops in the original driver. Clapton supports an extension which repurposes them as follows:
+
+CALL(destination)
+  * Opcode: 8A
+  * Length: 3
+  * Parameters: [1] Call destination (16-bit address/label)
+  * Functionality: Not in original driver! When triggered, this functions the same as JUMP(), except the address of the data physically following this opcode sequence is saved. The next call to RET() will then function as a JUMP() to the saved address, resuming playback from immediately after the most recent call to CALL() -- see RET() below.
+
+RET()
+  * Opcode: 8B
+  * Length: 2
+  * Parameters: None
+  * Functionality: Not in original driver! When triggered, this functions as a JUMP() to the data immediately after the most recent call to CALL() -- see CALL() above.
+
+===Special Functions===
+
+These special built-in functions can be called anywhere outside a sound assignment.
+
+SETBYTE(address, value) -- Sets the byte at the given absolute ROM address to the given value.
+
+SETADDRESS(address, value) -- Sets the 16-bit little-endian address at the given absolute ROM address to the given value.
