@@ -3,18 +3,18 @@
 // Free space defines
 // Portion of interrupt handler that isn't used during regular gameplay
 // 36309 / 0x11C / 284
-$freespace_1 = "0xC636";
+$freespace_1 = "0x10636";
 // iris/keycard 0x9349 (0x39 / 57)
 // this can't be used on level 5
 $freespace_keycard = "0xD349";
 
 // Overwrite the real channels at their original locations so we
 // shared with tri!
-_SQ1ADDR = 0xCAB9;
+_SQ1ADDR = 0x10AB9;
 // absolutely fucking nothing!
-_SQ2ADDR = 0xCAFE;
+_SQ2ADDR = 0x10AFE;
 // shared with sq1!
-_TRIADDR = 0xCACE;
+_TRIADDR = 0x10ACE;
 
 $defaultdecay = "10";
 
