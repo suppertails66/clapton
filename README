@@ -6,7 +6,9 @@ It supports all the opcodes provided by the original driver, and also supports (
 
 ===Build Instructions===
 
-Run the makefile. If you're on Windows, you can probably work something out.
+Due to some spectacularly poor planning on my part, an external library, liblonely, is required to build Clapton. It should be available from wherever you got this (probably Github). Ensure that the "clapton" directory containing the makefile lives at the same level as the "lonely" directory (which contains the subdirectory "liblonely" containing the needed library). Build liblonely per its instructions, then run the Clapton makefile.
+
+If you're on Windows, you can probably work something out.
 
 ===Usage===
 
